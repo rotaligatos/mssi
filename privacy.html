@@ -8,10 +8,10 @@
 /* Remember which link brought this visitor -- first visit wins, kept 90 days. Social Content
    Manager posts link here with utm_source / utm_campaign / utm_content (= the SCM post id), so a
    sign-up or order can be traced to the post that brought it. No personal data is kept. */
-(function(){try{var q=new URLSearchParams(location.search),s=q.get('utm_source')||(q.get('fbclid')?'facebook':'');
+(function(){try{var q=new URLSearchParams(location.search),fb=q.get('fb'),s=q.get('utm_source')||((fb||q.get('fbclid'))?'facebook':'');
 if(!s)return;var k='mssi_ref',o=JSON.parse(localStorage.getItem(k)||'null');if(o&&Date.now()-Date.parse(o.at)<7776e6)return;
 var c=function(v){return String(v||'').slice(0,80);};
-localStorage.setItem(k,JSON.stringify({src:c(s),medium:c(q.get('utm_medium')),campaign:c(q.get('utm_campaign')),post:c(q.get('utm_content')),page:c(location.pathname.split('/').pop()||'index.html'),at:new Date().toISOString()}));}catch(e){}})();
+localStorage.setItem(k,JSON.stringify({src:c(s),medium:c(q.get('utm_medium')),campaign:c(q.get('utm_campaign')),post:c(q.get('utm_content')||(fb?'scm_'+fb:'')),page:c(location.pathname.split('/').pop()||'index.html'),at:new Date().toISOString()}));}catch(e){}})();
 </script>
 <link rel="canonical" href="https://rotaligatos.github.io/mssi/privacy.html">
 <meta name="theme-color" content="#1f2a24">
