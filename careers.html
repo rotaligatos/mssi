@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" data-design="noir">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Careers — Module System and Services, Inc.</title>
+<script>
+/* Remember which link brought this visitor -- first visit wins, kept 90 days. Social Content
+   Manager posts link here with utm_source / utm_campaign / utm_content (= the SCM post id), so a
+   sign-up or order can be traced to the post that brought it. No personal data is kept. */
+(function(){try{var q=new URLSearchParams(location.search),s=q.get('utm_source')||(q.get('fbclid')?'facebook':'');
+if(!s)return;var k='mssi_ref',o=JSON.parse(localStorage.getItem(k)||'null');if(o&&Date.now()-Date.parse(o.at)<7776e6)return;
+var c=function(v){return String(v||'').slice(0,80);};
+localStorage.setItem(k,JSON.stringify({src:c(s),medium:c(q.get('utm_medium')),campaign:c(q.get('utm_campaign')),post:c(q.get('utm_content')),page:c(location.pathname.split('/').pop()||'index.html'),at:new Date().toISOString()}));}catch(e){}})();
+</script>
+<link rel="canonical" href="https://rotaligatos.github.io/mssi/careers.html">
+<meta name="theme-color" content="#1f2a24">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Module System and Services, Inc.">
+<meta property="og:locale" content="en_PH">
+<meta property="og:title" content="Careers — Module System and Services, Inc.">
+<meta property="og:description" content="Open positions at Module System and Services, Inc. — modular cabinetry and architectural joinery, fabricated and installed by our own crew in Pasig City.">
+<meta property="og:url" content="https://rotaligatos.github.io/mssi/careers.html">
+<meta property="og:image" content="https://rotaligatos.github.io/mssi/images/share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Open positions at Module System and Services, Inc. — modular cabinetry and architectural joinery, fabricated and installed by our own crew in Pasig City.">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Jost:wght@300;400;500;600&family=Space+Grotesk:wght@400;500&family=Bodoni+Moda:opsz,wght@6..96,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* Same tokens as the portal's noir direction, so the two pages are one site.
+   Values only — nothing here reaches into portal.html. */
+:root{
+  --bg:#15110E; --bg-2:#1E1814; --bg-3:#28201A;
+  --text:#F4F1EA; --text-2:#B9B1A5; --muted:#8F887D;
+  --accent:#C3A991; --accent-2:#A98D73; --on-accent:#1A1512;
+  --line:rgba(244,241,234,.16); --field-bg:#221B16;
+  --head:'Fraunces',Georgia,serif; --sans:'Jost',-apple-system,'Segoe UI',sans-serif;
+  --mono:'Space Grotesk','Jost',sans-serif;
+  --gut:clamp(1.15rem,4vw,4rem); --maxw:1180px;
+  --s3:1.1rem; --s4:1.8rem; --s5:3rem; --s6:4.5rem; --s7:7rem;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
+  font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ── backdrop ─────────────────────────────────────────────────────────────
+   Not a photograph. There is no factory photography yet, and finished-project
+   shots are about clients rather than about working here. This is a nesting
+   layout on a real 1220 x 2440 board — parts packed, offcut hatched — which is
+   literally the first of the six processes and belongs to nobody else. Drawn in
+   hairlines at low opacity so it reads as texture, never as competition for the
+   type. A warm wash sits under it so the page is not flat black. */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg::after{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(120% 80% at 12% -10%, rgba(195,169,145,.10), transparent 60%),
+    radial-gradient(90% 70% at 100% 100%, rgba(116,100,84,.12), transparent 62%)}
+/* Opacity is set per element, not once on the <svg> — a wrapper opacity
+   multiplies every value under it, which is how the first pass ended up at an
+   effective stroke alpha of .065 and near-invisible. */
+.bg svg{position:absolute;left:50%;top:50%;width:min(1700px,150vw);
+  transform:translate(-50%,-50%) rotate(-8deg)}
+.bg .board{fill:none;stroke:var(--accent);stroke-opacity:.5;stroke-width:2.5}
+/* The resting state is visible and the animation only plays it in — with
+   `opacity:0` plus `forwards` the backdrop existed only if the animation
+   actually completed, so a tab opened in the background rendered nothing.
+   `backwards` keeps each part hidden through its own delay without the final
+   state ever depending on the animation running. */
+.bg .part{fill:var(--accent);fill-opacity:.07;stroke:var(--accent);
+  stroke-opacity:.42;stroke-width:2;
+  animation:seat .9s cubic-bezier(.22,.7,.25,1) backwards}
+.bg .kerf{stroke:var(--accent);stroke-opacity:.24;stroke-width:1.5;stroke-dasharray:8 10}
+.bg .waste{fill:var(--accent);fill-opacity:.11}
+.bg .tick{stroke:var(--accent);stroke-opacity:.4;stroke-width:1.5}
+.bg .cap{fill:var(--accent);fill-opacity:.62;font-family:var(--mono);font-size:17px;
+  letter-spacing:.18em}
+@keyframes seat{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .bg .part{animation:none;opacity:1}
+}
+body>section,body>header,body>footer{position:relative;z-index:1}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
+section[id]{scroll-margin-top:2rem}
+h1,h2,h3{font-family:var(--head);font-weight:400;letter-spacing:-.03em;margin:0}
+a{color:inherit}
+.mono{font-family:var(--mono);font-size:.5625rem;letter-spacing:.2em;text-transform:uppercase}
+
+/* ── nav ─────────────────────────────────────────────────────────────── */
+.nav{position:fixed;inset-block-start:0;inset-inline:0;z-index:60;display:grid;
+  grid-template-columns:1fr auto;align-items:center;gap:var(--s3);
+  padding:1.05rem var(--gut);
+  background:linear-gradient(180deg,rgba(21,17,14,.96),rgba(21,17,14,.82) 70%,rgba(21,17,14,0))}
+.brand{display:inline-flex;flex-direction:column;align-items:center;
+  text-decoration:none;line-height:1;justify-self:start}
+.brand .lock{position:relative;display:block;width:max-content;padding-block:.72rem}
+.brand .full{display:block;width:max-content;position:relative;z-index:2;white-space:nowrap;
+  font-family:var(--mono);font-size:.5rem;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--text);
+  text-shadow:0 0 5px rgba(21,17,14,.9),0 0 2px rgba(21,17,14,.9)}
+.brand .wm{position:absolute;left:50%;top:50%;z-index:1;transform:translate(-50%,-50%);
+  white-space:nowrap;font-family:'Bodoni Moda',Didot,Georgia,serif;font-weight:700;
+  font-size:clamp(1.85rem,2.6vw,2.45rem);letter-spacing:.2em;color:var(--text);opacity:.42}
+@media(max-width:600px){
+  .brand .lock{padding-block:.6rem}
+  .brand .wm{font-size:1.45rem;letter-spacing:.16em}
+  .brand .full{font-size:.44rem;letter-spacing:.2em}
+}
+.nav-end{justify-self:end;display:flex;gap:1.4rem;align-items:center}
+.nav-end a{text-decoration:none;font-size:.92rem;color:var(--text-2);transition:color .2s}
+.nav-end a:hover{color:var(--text)}
+
+/* ── hero ────────────────────────────────────────────────────────────── */
+.hero{padding:calc(var(--s7) + 4rem) 0 var(--s6);border-bottom:1px solid var(--line)}
+.hero h1{font-size:clamp(2.2rem,5.4vw,4rem);max-width:18ch}
+.hero .lede{margin-top:var(--s4);max-width:56ch;color:var(--text-2);font-size:1.05rem}
+.kicker{color:var(--muted);display:block;margin-bottom:var(--s4)}
+.kicker b{color:var(--accent);font-weight:500}
+
+/* ── openings ────────────────────────────────────────────────────────── */
+.section{padding-block:var(--s6)}
+.sec-head{max-width:60ch;margin-bottom:var(--s5)}
+.sec-head h2{font-size:clamp(1.7rem,3.4vw,2.6rem)}
+.sec-head p{margin-top:var(--s3);color:var(--text-2)}
+.roles{border-top:1px solid var(--line)}
+.role{border-bottom:1px solid var(--line);padding:var(--s4) 0;display:grid;
+  grid-template-columns:minmax(0,1fr) auto;gap:var(--s4);align-items:start}
+@media(max-width:760px){.role{grid-template-columns:1fr}}
+.role h3{font-size:1.45rem}
+.role .meta{display:flex;flex-wrap:wrap;gap:.5rem .9rem;margin-top:.6rem}
+.role .meta span{font-family:var(--mono);font-size:.5625rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--line);
+  padding:.28rem .55rem;border-radius:2px}
+.role .sum{margin-top:.9rem;color:var(--text-2);max-width:64ch;font-size:.95rem}
+.role details{margin-top:.9rem}
+.role summary{cursor:pointer;color:var(--accent);font-size:.9rem;width:max-content}
+.role details .body{margin-top:.9rem;color:var(--text-2);font-size:.94rem;max-width:64ch}
+.role details h4{font-family:var(--mono);font-size:.5625rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);margin:1rem 0 .4rem}
+.role details p{margin:0;white-space:pre-line}
+.btn{font-family:var(--sans);font-size:.92rem;font-weight:400;cursor:pointer;
+  border-radius:2px;padding:.7rem 1.3rem;border:1px solid var(--accent);
+  background:transparent;color:var(--accent);transition:background .2s,color .2s;
+  text-decoration:none;display:inline-block;white-space:nowrap}
+.btn:hover{background:var(--accent);color:var(--on-accent)}
+.btn-fill{background:var(--accent-2);border-color:var(--accent-2);color:var(--on-accent)}
+.btn-fill:hover{background:var(--accent);border-color:var(--accent)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.state{padding:var(--s5) 0;color:var(--muted);border-bottom:1px solid var(--line)}
+
+/* ── form ────────────────────────────────────────────────────────────── */
+.form-card{background:var(--bg-2);border:1px solid var(--line);border-radius:2px;
+  padding:clamp(1.3rem,3vw,2.4rem);max-width:900px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:var(--s3)}
+.field label{font-family:var(--mono);font-size:.5625rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{
+  background:var(--field-bg);border:1px solid var(--line);border-radius:2px;
+  color:var(--text);font-family:var(--sans);font-size:.95rem;font-weight:300;
+  padding:.7rem .8rem;width:100%}
+.field textarea{min-height:120px;resize:vertical;line-height:1.55}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--accent)}
+.field .hint{font-size:.78rem;color:var(--muted)}
+.drop{border:1px dashed var(--line);border-radius:2px;padding:1.1rem;text-align:center;
+  background:var(--field-bg);cursor:pointer;transition:border-color .2s}
+.drop:hover{border-color:var(--accent)}
+.drop .t{font-size:.92rem;color:var(--text-2)}
+.drop input{display:none}
+.consent{display:flex;gap:.7rem;align-items:flex-start;margin:var(--s4) 0 var(--s3);
+  color:var(--text-2);font-size:.88rem;line-height:1.55}
+.consent input{margin-top:.25rem;accent-color:var(--accent-2);flex:0 0 auto}
+.privacy{font-size:.8rem;color:var(--muted);max-width:70ch;margin-top:var(--s3)}
+.msg{margin-top:var(--s3);padding:.85rem 1rem;border-radius:2px;font-size:.9rem;display:none}
+.msg.err{display:block;background:rgba(190,80,60,.12);border:1px solid rgba(190,80,60,.5);color:#F0B8AA}
+.msg.ok{display:block;background:rgba(120,160,120,.1);border:1px solid rgba(140,180,140,.45);color:#BFE0BF}
+.done{text-align:center;padding:var(--s6) 0}
+.done .ref{font-family:var(--mono);font-size:1.1rem;letter-spacing:.12em;color:var(--accent);
+  margin-top:var(--s3);display:block}
+
+/* ── footer ──────────────────────────────────────────────────────────── */
+.foot{border-top:1px solid var(--line);padding:var(--s6) 0 var(--s5);margin-top:var(--s6)}
+.foot a{color:var(--accent);text-decoration:none}
+.foot .rule{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  border-top:1px solid var(--line);margin-top:var(--s5);padding-top:var(--s3);
+  color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- A guillotine cut plan: three strips across a 2440 x 1220 board, the parts
+     seating in sequence, the unusable remainder hatched at the end. The numbers
+     are real board dimensions in millimetres. -->
+<div class="bg" aria-hidden="true">
+<svg viewBox="-60 -110 2560 1440" xmlns="http://www.w3.org/2000/svg">
+  <rect class="board" x="0" y="0" width="2440" height="1220"/>
+  <text class="cap" x="0" y="-40">1220 &#215; 2440 &#183; NESTED CUT PLAN</text>
+  <line class="tick" x1="0" y1="-24" x2="0" y2="-6"/>
+  <line class="tick" x1="2440" y1="-24" x2="2440" y2="-6"/>
+  <line class="tick" x1="0" y1="-15" x2="2440" y2="-15"/>
+
+  <!-- strip 1 -->
+  <g>
+    <rect class="part" style="animation-delay:.05s" x="12"   y="12"  width="780" height="580"/>
+    <rect class="part" style="animation-delay:.13s" x="804"  y="12"  width="780" height="580"/>
+    <rect class="part" style="animation-delay:.21s" x="1596" y="12"  width="820" height="580"/>
+    <line class="kerf" x1="0" y1="604" x2="2440" y2="604"/>
+  </g>
+  <!-- strip 2 -->
+  <g>
+    <rect class="part" style="animation-delay:.29s" x="12"   y="616" width="600" height="380"/>
+    <rect class="part" style="animation-delay:.36s" x="624"  y="616" width="600" height="380"/>
+    <rect class="part" style="animation-delay:.43s" x="1236" y="616" width="500" height="380"/>
+    <rect class="part" style="animation-delay:.50s" x="1748" y="616" width="668" height="380"/>
+    <line class="kerf" x1="0" y1="1008" x2="2440" y2="1008"/>
+  </g>
+  <!-- strip 3 — shelves, all one size -->
+  <g>
+    <rect class="part" style="animation-delay:.57s" x="12"   y="1020" width="392" height="176"/>
+    <rect class="part" style="animation-delay:.62s" x="416"  y="1020" width="392" height="176"/>
+    <rect class="part" style="animation-delay:.67s" x="820"  y="1020" width="392" height="176"/>
+    <rect class="part" style="animation-delay:.72s" x="1224" y="1020" width="392" height="176"/>
+    <rect class="part" style="animation-delay:.77s" x="1628" y="1020" width="392" height="176"/>
+    <!-- what is left over, and honest about it -->
+    <rect class="waste" x="2032" y="1020" width="384" height="176"/>
+    <text class="cap" x="2032" y="1260">OFFCUT</text>
+  </g>
+</svg>
+</div>
+
+<header class="nav">
+  <a class="brand" href="./">
+    <span class="lock"><span class="wm">MSSI</span><span class="full">Module System and Services, Inc.</span></span>
+  </a>
+  <div class="nav-end">
+    <a href="./">&larr; Home</a>
+    <a href="portal.html">Client Portal</a>
+  </div>
+</header>
+
+<section class="hero"><div class="wrap">
+  <span class="kicker mono"><b>01</b> / Careers</span>
+  <h1>Our factory, our crew. That only works if it is the right crew.</h1>
+  <p class="lede">We fabricate and install our own work — cutting, edgebanding, grooving, boring,
+    routing and HPL lamination, all under one roof in Pasig. Nothing is handed to a broker, which
+    means the person who makes it is the person who stands behind it. If that is how you would
+    rather work, we would like to hear from you.</p>
+</div></section>
+
+<section class="section" id="openings"><div class="wrap">
+  <div class="sec-head">
+    <h2>Open positions</h2>
+    <p>Apply to a specific role below, or send an open application and we will keep it on file.</p>
+  </div>
+  <div id="roles" class="roles"></div>
+  <div id="rolesState" class="state">Loading open positions…</div>
+</div></section>
+
+<section class="section" id="apply"><div class="wrap">
+  <div class="sec-head">
+    <h2>Apply</h2>
+    <p>One form. Attach a CV and we will come back to you — whether or not there is a match today.</p>
+  </div>
+
+  <form class="form-card" id="applyForm" autocomplete="on" novalidate>
+    <div class="field">
+      <label for="a_pos">Position applying for *</label>
+      <select id="a_pos"><option value="">Open application — no specific role</option></select>
+    </div>
+
+    <div class="grid2">
+      <div class="field"><label for="a_name">Full name *</label>
+        <input id="a_name" type="text" name="name" autocomplete="name" placeholder="Juan Dela Cruz"></div>
+      <div class="field"><label for="a_email">Email *</label>
+        <input id="a_email" type="email" name="email" autocomplete="email" placeholder="you@email.com"></div>
+      <div class="field"><label for="a_phone">Mobile number *</label>
+        <input id="a_phone" type="tel" name="tel" autocomplete="tel" placeholder="+63 9XX XXX XXXX"></div>
+      <div class="field"><label for="a_city">City you live in</label>
+        <input id="a_city" type="text" placeholder="e.g. Pasig City"></div>
+      <div class="field"><label for="a_years">Years of experience</label>
+        <select id="a_years">
+          <option value="">Select…</option>
+          <option>No experience — willing to learn</option>
+          <option>Less than 1 year</option><option>1–3 years</option>
+          <option>3–5 years</option><option>5–10 years</option><option>More than 10 years</option>
+        </select></div>
+      <div class="field"><label for="a_emp">Current or most recent employer</label>
+        <input id="a_emp" type="text" placeholder="Optional"></div>
+      <div class="field"><label for="a_salary">Expected salary</label>
+        <input id="a_salary" type="text" placeholder="Optional — monthly, in ₱"></div>
+      <div class="field"><label for="a_start">Earliest you can start</label>
+        <input id="a_start" type="text" placeholder="e.g. Immediately, or 30 days' notice"></div>
+    </div>
+
+    <div class="field">
+      <label>Curriculum vitae *</label>
+      <label class="drop" for="a_file">
+        <span class="t" id="a_fileLabel">Click to attach your CV — PDF or Word, up to 10&nbsp;MB</span>
+        <input id="a_file" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      </label>
+    </div>
+
+    <div class="field"><label for="a_note">Anything you would like us to know</label>
+      <textarea id="a_note" placeholder="What you have worked on, the machines you have run, or why this trade."></textarea></div>
+
+    <div class="field"><label for="a_src">How did you hear about us?</label>
+      <select id="a_src">
+        <option value="">Select…</option>
+        <option>Facebook</option><option>A friend or relative</option>
+        <option>Someone who works here</option><option>Walk-in / passed the factory</option>
+        <option>Job board</option><option>Search engine</option><option>Other</option>
+      </select></div>
+
+    <label class="consent">
+      <input type="checkbox" id="a_consent">
+      <span>I allow Module System and Services, Inc. to collect and store the personal
+        information and CV I am submitting, for the purpose of evaluating me for employment.
+        I understand I may ask for my data to be corrected or deleted at any time.</span>
+    </label>
+
+    <button type="submit" class="btn btn-fill" id="a_send">Send application</button>
+    <div class="msg" id="a_msg"></div>
+
+    <p class="privacy">Your CV is stored privately and is visible only to the people handling
+      hiring — it is never published and never shared with another company. Required fields are
+      marked *. Held in line with the Data Privacy Act of 2012 (RA 10173) — see our <a href="privacy.html">Privacy Notice</a>.</p>
+  </form>
+
+  <div class="done" id="doneCard" style="display:none">
+    <h2>Thank you — we have your application.</h2>
+    <span class="ref" id="doneRef"></span>
+    <p style="color:var(--text-2);margin-top:1rem">Keep that reference. We read every application
+      and will come back to you by email.</p>
+    <p style="margin-top:var(--s4)"><a class="btn" href="#openings" onclick="resetForm()">Apply for another role</a></p>
+  </div>
+</div></section>
+
+<footer class="foot"><div class="wrap">
+  <p style="color:var(--text-2);max-width:60ch">Module System and Services, Inc. — modular cabinetry
+    and architectural joinery, fabricated and installed by our own crew.
+    <a href="tel:+638986006926">+63 898 600 6926</a> &middot;
+    <a href="mailto:modulesystems@worldclasslaminate.com.ph">modulesystems@worldclasslaminate.com.ph</a> &middot;
+    88 Jenny&rsquo;s Ave., Maybunga, Pasig City ·
+    <a href="https://facebook.com/ModuleKitchenPH" target="_blank" rel="noopener">facebook.com/ModuleKitchenPH</a></p>
+  <p class="rule mono"><span>© Module System and Services, Inc.</span><span><a href="privacy.html">Privacy Notice</a></span></p>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+/* Same route as the client portal: the browser writes straight to Supabase with
+   the publishable key. The policies allow INSERT only, so an applicant can file
+   an application but can never read anybody else's back — and unlike the order
+   attachments bucket, `resumes` is PRIVATE, so a CV has no public URL at all. */
+var SUPA_URL='https://nkpekroogqsmfilypowd.supabase.co';
+var SUPA_KEY='sb_publishable_jpp6ZiFup3v0VVRJtjCOTQ_bF-SEpt4';
+var MAX_MB=10;
+var _sb=null, openings=[], picked=null;
+function sb(){
+  if(_sb) return _sb;
+  if(typeof supabase==='undefined'||!supabase.createClient) return null;
+  _sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+  return _sb;
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function el(id){ return document.getElementById(id); }
+function newRef(){
+  var d=new Date(), p=function(n){return String(n).padStart(2,'0');};
+  return 'APP-'+String(d.getFullYear()).slice(2)+p(d.getMonth()+1)+p(d.getDate())
+    +'-'+Math.floor(1000+Math.random()*9000);
+}
+function say(kind,text){
+  var m=el('a_msg'); m.className='msg '+kind; m.textContent=text;
+  if(kind==='err') m.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ── openings ─────────────────────────────────────────────────────────── */
+function renderRoles(){
+  var wrap=el('roles'), state=el('rolesState');
+  if(!openings.length){
+    wrap.innerHTML='';
+    state.innerHTML='No positions are open at the moment. We still read open applications — '+
+      '<a href="#apply" style="color:var(--accent)">send one</a> and we will keep it on file.';
+    return;
+  }
+  state.style.display='none';
+  wrap.innerHTML=openings.map(function(o,i){
+    var meta=[o.department,o.location,o.employment_type,
+              (o.vacancies>1? o.vacancies+' openings':'')].filter(Boolean);
+    var detail='';
+    if(o.responsibilities) detail+='<h4>What you would do</h4><p>'+esc(o.responsibilities)+'</p>';
+    if(o.requirements)     detail+='<h4>What we are looking for</h4><p>'+esc(o.requirements)+'</p>';
+    return '<article class="role">'+
+      '<div><h3>'+esc(o.title)+'</h3>'+
+        '<div class="meta">'+meta.map(function(m){return '<span>'+esc(m)+'</span>';}).join('')+'</div>'+
+        (o.summary?'<p class="sum">'+esc(o.summary)+'</p>':'')+
+        (detail?'<details><summary>Read the full description</summary><div class="body">'+detail+'</div></details>':'')+
+      '</div>'+
+      '<div><button class="btn" type="button" data-apply="'+i+'">Apply</button></div>'+
+    '</article>';
+  }).join('');
+  [].forEach.call(wrap.querySelectorAll('[data-apply]'),function(b){
+    b.addEventListener('click',function(){
+      var o=openings[+b.getAttribute('data-apply')];
+      el('a_pos').value=o.id;
+      el('apply').scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(function(){ el('a_name').focus(); },420);
+    });
+  });
+}
+function fillSelect(){
+  var s=el('a_pos');
+  openings.forEach(function(o){
+    var opt=document.createElement('option');
+    opt.value=o.id; opt.textContent=o.title;
+    s.appendChild(opt);
+  });
+}
+function loadOpenings(){
+  var c=sb();
+  if(!c){ el('rolesState').textContent='Could not load the list of positions. Please refresh, or send an open application below.'; return; }
+  c.from('job_openings').select('*').eq('is_published',true)
+   .order('sort_order',{ascending:true}).order('posted_at',{ascending:false})
+   .then(function(r){
+     if(r.error){ console.warn(r.error);
+       el('rolesState').textContent='Could not load the list of positions. You can still send an open application below.';
+       return; }
+     openings=r.data||[];
+     fillSelect(); renderRoles();
+   });
+}
+
+/* ── the form ─────────────────────────────────────────────────────────── */
+el('a_file').addEventListener('change',function(){
+  var f=this.files && this.files[0];
+  if(!f){ picked=null; el('a_fileLabel').textContent='Click to attach your CV — PDF or Word, up to '+MAX_MB+' MB'; return; }
+  if(f.size > MAX_MB*1024*1024){
+    picked=null; this.value='';
+    el('a_fileLabel').textContent='That file is over '+MAX_MB+' MB — please attach a smaller one.';
+    return;
+  }
+  picked=f;
+  el('a_fileLabel').textContent=f.name+' — '+Math.max(1,Math.round(f.size/1024))+' KB';
+});
+
+function resetForm(){
+  el('applyForm').style.display='';
+  el('doneCard').style.display='none';
+  el('applyForm').reset(); picked=null;
+  el('a_fileLabel').textContent='Click to attach your CV — PDF or Word, up to '+MAX_MB+' MB';
+  el('a_msg').className='msg';
+}
+window.resetForm=resetForm;
+
+el('applyForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var btn=el('a_send');
+  var name=el('a_name').value.trim(), email=el('a_email').value.trim(),
+      phone=el('a_phone').value.trim();
+  if(!name)  return say('err','Please enter your full name.');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return say('err','Please enter a valid email address — it is how we reply.');
+  if(!phone) return say('err','Please enter a mobile number.');
+  if(!picked) return say('err','Please attach your CV.');
+  if(!el('a_consent').checked) return say('err','Please tick the box to allow us to store your details.');
+
+  var c=sb();
+  if(!c) return say('err','Could not reach our server. Please check your connection and try again.');
+
+  btn.disabled=true; btn.textContent='Sending…'; say('ok','Uploading your CV…');
+  var ref=newRef();
+  var clean=picked.name.replace(/[^\w.\-]/g,'_');
+  var key=ref+'/'+clean;
+
+  c.storage.from('resumes').upload(key,picked,{upsert:false,contentType:picked.type||'application/octet-stream'})
+   .then(function(up){
+     if(up.error) throw new Error('Your CV could not be uploaded. '+(up.error.message||''));
+     var posId=el('a_pos').value||null;
+     var title=posId ? (openings.filter(function(o){return o.id===posId;})[0]||{}).title : 'Open application';
+     return c.from('job_applications').insert({
+       id:ref,
+       opening_id:posId,
+       position_applied:title||'Open application',
+       full_name:name, email:email, phone:phone,
+       city:el('a_city').value.trim()||null,
+       years_experience:el('a_years').value||null,
+       current_employer:el('a_emp').value.trim()||null,
+       expected_salary:el('a_salary').value.trim()||null,
+       earliest_start:el('a_start').value.trim()||null,
+       cover_note:el('a_note').value.trim()||null,
+       resume_path:key, resume_name:picked.name,
+       source:el('a_src').value||null,
+       consent_at:new Date().toISOString()
+     });
+   })
+   .then(function(ins){
+     /* The CV is already stored; a silent failure here would lose the applicant,
+        so this must be visible rather than a fake thank-you screen. */
+     if(ins.error) throw new Error('Your CV uploaded, but the application did not save. Please email us and quote '+ref+'.');
+     el('applyForm').style.display='none';
+     el('doneRef').textContent=ref;
+     el('doneCard').style.display='block';
+     el('doneCard').scrollIntoView({behavior:'smooth',block:'center'});
+   })
+   .catch(function(err){
+     say('err',err.message||'Something went wrong. Please try again.');
+     btn.disabled=false; btn.textContent='Send application';
+   });
+});
+
+loadOpenings();
+})();
+</script>
+</body>
+</html>

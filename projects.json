@@ -1,0 +1,43 @@
+[
+ {"_readme":"Add one block per project. Delete this line. Everything except name is optional.","_fields":{"name":"short project name — shown on the card and the map","building":"the establishment, e.g. 'Shangri-La The Fort'. This is the hero on a no-photo entry.","loc":"City, Province — leave out and it won't pin on the map","lat/lng":"decimal degrees. Omit and the project still lists, just isn't pinned.","sector":"Healthcare | Hospitality | Retail · Automotive | Resort | Residential | Commercial | General Contractor","role":"Fabrication only | Fabrication & installation","client":"company name. For RESIDENTIAL always use 'Private client' — never a person's name.","scope":"what you supplied"}},
+
+ {"name":"BYD Bauang","building":"BYD showroom","loc":"Bauang, La Union","lat":16.53,"lng":120.33,"sector":"Retail · Automotive","role":"Fabrication & installation","client":"GW Fortune","scope":"Showroom display, reception, client lounge"},
+
+ {"name":"BYD San Fernando","building":"BYD showroom","loc":"San Fernando, La Union","lat":16.62,"lng":120.32,"sector":"Retail · Automotive","role":"Fabrication & installation","client":"GW Fortune","scope":"Showroom display, reception, client lounge"},
+
+ {"name":"BYD Angeles","building":"BYD showroom","loc":"Angeles, Pampanga","lat":15.15,"lng":120.59,"sector":"Retail · Automotive","role":"Fabrication & installation","client":"GW Fortune","scope":"Showroom & display, reception, lounge"},
+
+ {"name":"Tivoli","building":"Tivoli","loc":"Quezon City","lat":14.63,"lng":121.03,"sector":"Residential","role":"Fabrication & installation","client":"GW Fortune","scope":"Closet and kitchen cabinets, one condominium unit"},
+
+ {"name":"Future World","building":"Future World Suite","loc":"Quezon City","lat":14.68,"lng":121.05,"sector":"Hospitality","role":"Fabrication & installation","client":"Future World","scope":"Reception counter, lobby feature wall, illuminated display joinery"},
+
+ {"name":"New Sinai MD Hospital","building":"New Sinai MD Hospital","loc":"Sta. Rosa, Laguna","lat":14.31,"lng":121.11,"sector":"Healthcare","role":"Fabrication & installation","client":"New Sinai MD Hospital","scope":"Nurse stations, triage, critical-care joinery"},
+
+ {"name":"Radius","building":"Radius","loc":"Nasugbu, Batangas","lat":14.07,"lng":120.63,"sector":"Resort","role":"Fabrication & installation","client":"Radius","scope":"Villa pantry and marble feature wall"},
+
+ {"name":"WCLI Head Office","building":"Head Office 608","loc":"Pasig City","lat":14.58,"lng":121.09,"sector":"Commercial","role":"Fabrication & installation","client":"World Class Laminate, Inc.","scope":"Office casework"},
+
+ {"name":"Private residences","building":"Private homes","loc":"Metro Manila and nearby provinces","sector":"Residential","role":"Fabrication & installation","client":"Private client","scope":"Kitchens, wardrobes, vanities and storage","_todo":"Holds the homes that cannot be pinned individually - a private address must never be published (HANDOFF section 6). Named properties such as Privado and Greenland stay as their own entries."},
+
+ {"name":"Richcon Builders","building":"To confirm","loc":"Location to confirm","sector":"General Contractor","role":"Fabrication & installation","client":"Richcon Builders","scope":"To confirm"},
+
+ {"name":"Araro Condominium","building":"Araro Condominium","loc":"Makati City","lat":14.5547,"lng":121.0244,"sector":"Commercial","role":"Fabrication & installation","client":"Bigpat","scope":"To confirm","_todo":"Pin is Makati CBD - approximate. Sharpen once the exact address is known. Scope still to confirm."},
+
+ {"name":"Philippine Realty","building":"Philippine Realty SF1175","loc":"Panay Ave., Quezon City","lat":14.636,"lng":121.033,"sector":"Commercial","role":"Fabrication & installation","client":"Philippine Realty","scope":"Vanity areas","_todo":"Developer project, not a private home — Philippine Realty & Holdings is the developer, MSSI supplied the vanity areas."},
+
+ {"name":"Privado residence","building":"Privado","loc":"Location to confirm","sector":"Residential","role":"Fabrication & installation","client":"Private client","scope":"To confirm"},
+
+ {"name":"Greenland residence","building":"Greenland Executive Village","loc":"Cainta, Rizal","lat":14.579,"lng":121.122,"sector":"Residential","role":"Fabrication & installation","client":"Private client","scope":"Walk-in wardrobe, slatted feature wall, shoe storage"},
+
+ {"name":"Lagen Island Resort","building":"Lagen Island Resort, El Nido","loc":"El Nido, Palawan","lat":11.19,"lng":119.32,"sector":"Resort","role":"Fabrication only","client":"To confirm","scope":"Fabrication only - scope to confirm","photoCredit":{"by":"geLowfish","license":"CC BY-SA 4.0","licenseUrl":"https://creativecommons.org/licenses/by-sa/4.0/","source":"https://commons.wikimedia.org/wiki/File:Lagen_Resort,_El_Nido_Palawan.jpg","changes":"resized and recompressed for web"},"_todo":"FIRST fabrication-only entry. Pin is Bacuit Bay, approximate. The photo is a LICENSED stock shot of the island, not MSSI's own work - the credit above is a licence condition and must stay visible wherever the image appears. Swap it for a workshop photo of the fabricated units if one turns up."},
+
+ {"name":"Bayshore Residential Resort","building":"Bayshore Residential Resort","loc":"Parañaque City","lat":14.529,"lng":120.982,"sector":"Commercial","role":"Fabrication only","client":"MFT","scope":"Fabrication only — cabinets for one building, contracted by MFT","_todo":"Developer project, not a private home: MSSI was contracted by MFT to fabricate for one building. Pin is Entertainment City, Parañaque — approximate. No photo yet; needs one from MFT, the developer, or the workshop."},
+
+ {"_note":"CWLI (Cebu World Laminate) work - sister company, not WCLI/MSSI. Added so it can be reviewed on the site; delete these three if the MSSI portfolio should only claim MSSI/WCLI projects."},
+
+ {"name":"Astra Mall","building":"Astra Mall","loc":"Cebu City","lat":10.3157,"lng":123.8854,"sector":"Commercial","role":"Fabrication & installation","client":"Reliabuilt","scope":"Mall fit-out - curved fluted columns, feature balustrade cladding","_todo":"Pin is Cebu City centre - approximate. Sharpen once the exact site is known."},
+
+ {"name":"Kaizen","building":"To confirm","loc":"Cebu City","lat":10.3095,"lng":123.8931,"sector":"Commercial","role":"Fabrication & installation","client":"Kaizen Engineering Construction","scope":"Toilet and vanity partitions","_todo":"Pin is Cebu City centre - approximate. Sharpen once the exact site is known."},
+
+ {"name":"Mactan","building":"To confirm","loc":"Mactan, Cebu","lat":10.3103,"lng":123.9494,"sector":"Commercial","role":"Fabrication & installation","client":"Reliabuilt","scope":"Toilet partitions"}
+]

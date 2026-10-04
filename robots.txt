@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rotaligatos.github.io/mssi/sitemap.xml

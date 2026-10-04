@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Where we've built — Module System and Services, Inc.</title>
+<script>
+/* Remember which link brought this visitor -- first visit wins, kept 90 days. Social Content
+   Manager posts link here with utm_source / utm_campaign / utm_content (= the SCM post id), so a
+   sign-up or order can be traced to the post that brought it. No personal data is kept. */
+(function(){try{var q=new URLSearchParams(location.search),s=q.get('utm_source')||(q.get('fbclid')?'facebook':'');
+if(!s)return;var k='mssi_ref',o=JSON.parse(localStorage.getItem(k)||'null');if(o&&Date.now()-Date.parse(o.at)<7776e6)return;
+var c=function(v){return String(v||'').slice(0,80);};
+localStorage.setItem(k,JSON.stringify({src:c(s),medium:c(q.get('utm_medium')),campaign:c(q.get('utm_campaign')),post:c(q.get('utm_content')),page:c(location.pathname.split('/').pop()||'index.html'),at:new Date().toISOString()}));}catch(e){}})();
+</script>
+<meta name="description" content="Fabrication and installation projects by Module System and Services, Inc. across the Philippines — hotels, offices, hospitals, showrooms and homes.">
+<link rel="canonical" href="https://rotaligatos.github.io/mssi/where-weve-built.html">
+<meta name="theme-color" content="#1f2a24">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Module System and Services, Inc.">
+<meta property="og:locale" content="en_PH">
+<meta property="og:title" content="Where we've built — Module System and Services, Inc.">
+<meta property="og:description" content="Fabrication and installation projects by Module System and Services, Inc. across the Philippines — hotels, offices, hospitals, showrooms and homes.">
+<meta property="og:url" content="https://rotaligatos.github.io/mssi/where-weve-built.html">
+<meta property="og:image" content="https://rotaligatos.github.io/mssi/images/share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141A16; --bg-2:#1F2621; --bg-3:#2A322C;
+  --text:#F4F1E9; --muted:#A3ADA3; --accent:#E3C08A; --accent-2:#C89B62;
+  --line:rgba(244,241,233,.14);
+  --display:'Fraunces',Georgia,serif; --body:'Jost',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:300;-webkit-font-smoothing:antialiased}
+
+#stage{position:fixed;inset:0;background:
+  radial-gradient(130% 90% at 50% 4%,rgba(227,192,138,.10),transparent 58%),
+  radial-gradient(90% 70% at 50% 120%,rgba(127,209,200,.05),transparent 60%),var(--bg);
+  cursor:grab;touch-action:none}
+#stage.drag{cursor:grabbing}
+#stage.pan{cursor:move}
+#cv{display:block;width:100%;height:100%}
+
+/* ---------- chrome ---------- */
+.hdr{position:fixed;top:0;left:0;padding:clamp(1.1rem,2.6vw,2.2rem);z-index:5;pointer-events:none;max-width:min(90vw,460px)}
+.eyebrow{font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 .7rem;display:flex;align-items:center;gap:.7rem}
+.eyebrow::before{content:'';width:clamp(18px,3vw,38px);height:1px;background:var(--accent);opacity:.75}
+.hdr h1{font-family:var(--display);font-weight:400;font-size:clamp(1.35rem,2.9vw,2.2rem);
+  line-height:1.08;letter-spacing:-.03em;margin:0}
+.hdr h1 b{font-weight:700;color:var(--accent)}
+.hdr p{margin:.6rem 0 0;color:rgba(244,241,233,.68);font-size:clamp(.8rem,1vw,.92rem);line-height:1.5;max-width:40ch}
+
+/* sector rail */
+.rail{position:fixed;left:clamp(1.1rem,2.6vw,2.2rem);top:min(42vh,230px);z-index:6;
+  display:flex;flex-direction:column;gap:.12rem;max-height:52vh;overflow:auto;padding-right:.3rem}
+.sec{display:flex;align-items:center;gap:.55rem;background:transparent;border:0;cursor:pointer;
+  color:var(--muted);font-family:var(--body);font-size:.8rem;padding:.3rem .5rem .3rem .3rem;
+  border-radius:3px;text-align:left;transition:color .2s,background .2s;white-space:nowrap}
+.sec:hover,.sec.on{color:var(--text);background:rgba(244,241,233,.06)}
+.sec .sw{width:8px;height:8px;border-radius:2px;flex:0 0 auto;box-shadow:0 0 8px currentColor}
+.sec .n{flex:1}
+.sec .c{font-size:.7rem;opacity:.7;font-variant-numeric:tabular-nums}
+.sec.off{opacity:.35}
+
+.ctrl{position:fixed;right:clamp(1rem,2.6vw,2rem);bottom:clamp(1rem,2.6vw,2rem);z-index:6;display:flex;flex-direction:column;gap:.35rem}
+.ctrl button{width:38px;height:38px;border-radius:3px;border:1px solid var(--line);
+  background:rgba(31,38,33,.88);color:var(--text);cursor:pointer;font-size:1rem;
+  font-family:var(--body);backdrop-filter:blur(8px);transition:border-color .2s,background .2s}
+.ctrl button:hover{border-color:var(--accent);background:var(--bg-3)}
+.ctrl .z{font-size:.58rem;letter-spacing:.08em;color:var(--muted);text-align:center;padding:.15rem 0;font-variant-numeric:tabular-nums}
+
+/* This page is reached from the website, so it needs a way back.
+   It sits beside the projects button, NOT top-left — the left column is the
+   headline and the sector rail, and squeezing it in there pushed them into
+   each other on short screens. */
+.backlink{position:fixed;top:clamp(1.1rem,2.6vw,2.2rem);
+  right:calc(clamp(1rem,2.6vw,2rem) + 132px);z-index:7;
+  display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;
+  font-family:var(--body);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:.42rem .8rem;
+  background:rgba(31,38,33,.8);backdrop-filter:blur(8px);transition:color .2s,border-color .2s}
+.backlink:hover{color:var(--text);border-color:var(--accent)}
+.backlink span{transition:transform .3s}
+.backlink:hover span{transform:translateX(-4px)}
+@media (prefers-reduced-motion:reduce){.backlink span{transition:none}.backlink:hover span{transform:none}}
+@media(max-width:700px){   /* no room for both on one line — drop it under the button */
+  .backlink{right:clamp(1rem,2.6vw,2rem);top:calc(clamp(1.1rem,2.6vw,2.2rem) + 2.9rem)}
+}
+
+/* The heading lives INSIDE the map, over the canvas. Stacking it above the frame
+   pushed the model down the page; here the map keeps the full height of its
+   section and the words sit on top of it. */
+
+/* shown when someone wheels over the embedded map without the modifier */
+.zoomnudge{position:fixed;inset:0;z-index:12;display:grid;place-items:center;pointer-events:none;
+  background:rgba(20,26,22,.55);backdrop-filter:blur(2px);opacity:0;transition:opacity .25s}
+.zoomnudge.on{opacity:1}
+.zoomnudge b{font-family:var(--body);font-weight:400;font-size:.95rem;letter-spacing:.06em;
+  color:var(--text);border:1px solid var(--line);background:rgba(31,38,33,.95);
+  padding:.75rem 1.3rem;border-radius:3px}
+.zoomnudge b kbd{font:inherit;color:var(--accent);border:1px solid var(--line);
+  border-radius:2px;padding:.05rem .35rem;margin:0 .15rem}
+
+.hint{position:fixed;left:50%;bottom:clamp(1rem,2.6vw,2rem);transform:translateX(-50%);z-index:5;
+  font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  pointer-events:none;opacity:.8;white-space:nowrap;transition:opacity .5s}
+.hint.gone{opacity:0}
+
+.lbtn{position:fixed;top:clamp(1.1rem,2.6vw,2.2rem);right:clamp(1rem,2.6vw,2rem);z-index:6;
+  border:1px solid var(--line);background:rgba(31,38,33,.88);color:var(--text);cursor:pointer;
+  border-radius:3px;padding:.5rem .9rem;font-family:var(--body);font-size:.76rem;backdrop-filter:blur(8px)}
+.lbtn:hover{border-color:var(--accent)}
+.lbtn b{color:var(--accent);font-weight:500}
+
+/* hover card */
+.hc{position:fixed;z-index:7;pointer-events:none;opacity:0;transform:translateY(6px);
+  transition:opacity .16s,transform .16s;width:262px}
+.hc.on{opacity:1;transform:none}
+.hc-in{background:rgba(20,26,22,.95);border:1px solid rgba(227,192,138,.4);border-radius:4px;
+  overflow:hidden;backdrop-filter:blur(12px);box-shadow:0 22px 55px -20px #000}
+.hc-img{height:112px;background-size:cover;background-position:center}
+.hc-grid{height:112px;display:grid;gap:2px}
+.hc-grid i{display:block;background-size:cover;background-position:center;min-width:0;min-height:0}
+.hc-grid.two{grid-template-columns:1fr 1fr}
+.hc-grid.three{grid-template-columns:1.55fr 1fr}
+.hc-grid.three span{display:grid;grid-template-rows:1fr 1fr;gap:2px;min-height:0}
+.hc-more{position:absolute;right:.5rem;margin-top:-1.6rem;font-size:.58rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text);background:rgba(12,16,13,.72);
+  padding:.12rem .35rem;border-radius:2px;backdrop-filter:blur(4px)}
+.hc-plate{height:82px;display:grid;place-items:center;padding:.5rem;
+  background:repeating-linear-gradient(135deg,rgba(244,241,233,.04) 0 7px,transparent 7px 14px),var(--bg-3)}
+.role{display:inline-block;font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;
+  border:1px solid currentColor;border-radius:2px;padding:.1rem .3rem;opacity:.8;margin-left:.35rem;vertical-align:.05em}
+.hc-b{padding:.7rem .85rem}
+.hc-b .s{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;display:block}
+.hc-b .n{font-family:var(--display);font-weight:500;font-size:1rem;display:block;margin-top:.12rem}
+.hc-b .l{font-size:.76rem;color:var(--muted);display:block;margin-top:.1rem}
+.hc-b .c{font-size:.68rem;color:var(--muted);display:block;margin-top:.4rem;padding-top:.4rem;border-top:1px solid var(--line)}
+
+/* drawer */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(92vw,372px);z-index:8;background:var(--bg-2);
+  border-left:1px solid var(--line);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.2,1);
+  display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer-h{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.1rem;border-bottom:1px solid var(--line)}
+.drawer-h h2{font-family:var(--display);font-weight:500;font-size:1rem;margin:0}
+.drawer-h button{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:2px;
+  padding:.32rem .65rem;cursor:pointer;font-family:var(--body);font-size:.76rem}
+.drawer-b{overflow:auto;padding:.8rem .9rem 2rem;display:flex;flex-direction:column;gap:.4rem}
+.pcard{display:grid;grid-template-columns:64px 1fr;gap:.7rem;align-items:center;width:100%;
+  background:var(--bg-3);border:1px solid transparent;border-radius:3px;padding:.5rem;cursor:pointer;
+  text-align:left;color:inherit;font-family:inherit;transition:border-color .2s}
+.pcard:hover,.pcard.on{border-color:var(--accent)}
+.pcard .th{width:64px;height:44px;border-radius:2px;background-size:cover;background-position:center}
+.pcard .plate{width:64px;height:44px;border-radius:2px;display:grid;place-items:center;padding:.25rem;
+  background:repeating-linear-gradient(135deg,rgba(244,241,233,.04) 0 7px,transparent 7px 14px),var(--bg-2);border:1px solid var(--line)}
+.pcard .s{font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;display:block}
+.pcard .n{font-family:var(--display);font-weight:500;font-size:.9rem;display:block;margin-top:.08rem}
+.pcard .l{font-size:.72rem;color:var(--muted);display:block}
+.lgroup{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:.8rem 0 .1rem}
+.lgroup:first-child{margin-top:0}
+
+/* detail */
+.ov{position:fixed;inset:0;z-index:20;background:rgba(12,16,13,.96);backdrop-filter:blur(8px);display:none;padding:clamp(1rem,3vw,2.5rem)}
+.ov.open{display:flex;flex-direction:column;animation:ovIn .3s ease}
+@keyframes ovIn{from{opacity:0}to{opacity:1}}
+.ov-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.ov-top .s{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.ov-top h2{font-family:var(--display);font-weight:500;font-size:clamp(1.4rem,3vw,2.2rem);letter-spacing:-.02em;margin:.25rem 0 0}
+.ov-top .l{color:var(--muted);font-size:.9rem;margin-top:.25rem}
+.ov-close{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:2px;padding:.5rem .9rem;cursor:pointer;font-family:var(--body);font-size:.8rem}
+.ovstage{flex:1;min-height:0;display:flex;align-items:center;gap:.8rem}
+.ovstage img{flex:1;min-width:0;max-height:100%;height:100%;object-fit:contain;border-radius:2px}
+.nav{background:rgba(31,38,33,.85);border:1px solid var(--line);color:var(--text);border-radius:50%;width:42px;height:42px;flex:0 0 auto;cursor:pointer;font-size:1.1rem}
+.strip{display:flex;gap:.45rem;overflow-x:auto;padding-top:.9rem;margin-top:.6rem;border-top:1px solid var(--line)}
+.strip button{flex:0 0 auto;width:82px;height:56px;border-radius:2px;border:1px solid transparent;background-size:cover;background-position:center;cursor:pointer;opacity:.5}
+.strip button.on{opacity:1;border-color:var(--accent)}
+.cap{color:var(--muted);font-size:.84rem;margin-top:.6rem;text-align:center}
+/* Record view — for work we fabricated but didn't install, so no site photos exist.
+   The establishment NAME is the credential, so it is the hero; the glyph sits behind
+   it as a watermark. Deliberately confident, not an apologetic empty frame. */
+.rec{flex:1;min-height:0;overflow:auto;position:relative;border:1px solid var(--line);
+  border-radius:3px;background:var(--bg-2);padding:clamp(1.5rem,4vw,3rem);display:flex;flex-direction:column}
+.rec .wm{position:absolute;right:-2%;top:50%;transform:translateY(-50%);width:min(46%,380px);
+  opacity:.07;pointer-events:none}
+.rec .lbl{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);position:relative}
+.rec .est{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,5.2vw,4rem);
+  line-height:1.03;letter-spacing:-.035em;margin:.5rem 0 0;position:relative;max-width:18ch}
+.rec .loc{font-size:clamp(.95rem,1.5vw,1.2rem);color:var(--accent);margin-top:.7rem;position:relative}
+.rec .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.4rem 2rem;
+  margin-top:auto;padding-top:1.8rem;position:relative}
+.rec .meta .k{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.rec .meta .v{font-family:var(--display);font-size:1.02rem;margin-top:.3rem;line-height:1.3}
+.rec .meta .v.dim{font-family:var(--body);font-size:.9rem;color:var(--muted);font-style:italic}
+.rec .rule{height:1px;background:var(--line);margin-top:1.6rem;position:relative}
+@media(max-width:820px){
+  .ovstage{flex-direction:column}.ovstage img{width:100%}.nav{display:none}
+  .hdr p{display:none}.hc{width:220px}
+  .hdr{max-width:calc(100vw - 2rem)}.hdr h1{font-size:1.25rem;max-width:16ch}
+  .lbtn{top:auto;right:auto;bottom:clamp(1rem,2.6vw,2rem);left:clamp(1rem,2.6vw,2rem)}
+  .hint{display:none}
+  .rail{top:auto;bottom:5.2rem;left:clamp(1rem,2.6vw,2rem);flex-direction:row;max-height:none;
+    max-width:calc(100vw - 6rem);overflow-x:auto;gap:.3rem}
+  .sec .c,.sec .n{display:none}
+  .sec{padding:.4rem}
+}
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="cv"></canvas></div>
+
+<div class="hdr">
+  <p class="eyebrow">Selected work</p>
+  <h1>A car showroom and a family kitchen, <b>built to the same standard.</b></h1>
+  <p>Distance doesn't loosen a tolerance. Hover a marker to see what we built there.</p>
+</div>
+
+<div class="rail" id="rail"></div>
+<button class="lbtn" onclick="toggleDrawer()"><b id="cnt">0</b> projects &nbsp;&#9776;</button>
+
+<div class="ctrl">
+  <button onclick="zoomBy(1.25)" aria-label="Zoom in">+</button>
+  <div class="z" id="zlbl">100%</div>
+  <button onclick="zoomBy(0.8)" aria-label="Zoom out">&minus;</button>
+  <button id="orbitBtn" onclick="toggleOrbit()" title="Turn the model — then drag" aria-pressed="false" aria-label="Turn the model">&#10227;</button>
+  <button onclick="resetView()" title="Reset view" aria-label="Reset view">&#8635;</button>
+</div>
+
+<a class="backlink" href="./#portfolio"><span>&larr;</span> Back to MSSI</a>
+<div class="zoomnudge" id="zoomNudge"><b>Hold <kbd>ctrl</kbd> and scroll to zoom &nbsp;·&nbsp; drag to move</b></div>
+<div class="hint" id="hint">drag to move &nbsp;·&nbsp; &#10227; to turn &nbsp;·&nbsp; scroll to zoom &nbsp;·&nbsp; hover a tower</div>
+<div class="hc" id="hc"><div class="hc-in" id="hcIn"></div></div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-h"><h2>All projects</h2><button onclick="toggleDrawer()">Close &times;</button></div>
+  <div class="drawer-b" id="plist"></div>
+</aside>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true">
+  <div class="ov-top"><div><span class="s" id="ovSector"></span><h2 id="ovName"></h2><div class="l" id="ovLoc"></div></div>
+    <button class="ov-close" onclick="closeOv()">Close &times;</button></div>
+  <div class="ovstage" id="ovStage"><button class="nav" onclick="step(-1)">&#8249;</button>
+    <img id="ovImg" alt=""><button class="nav" onclick="step(1)">&#8250;</button></div>
+  <div class="rec" id="ovFacts" style="display:none"></div>
+  <div class="cap" id="ovCap"></div><div class="strip" id="ovStrip"></div>
+</div>
+
+<script>
+/* ============================================================
+   Locations from Drive folder names + Rommel, 2026-07-27.
+   Residential is identified by property or area only — never the
+   client's name (a private home would reveal where someone lives).
+   ============================================================ */
+const HQ={name:'MSSI factory',loc:'Pasig City',lat:14.575,lng:121.08};
+/* Fabrication-only jobs have no finished-installation photos — MSSI wasn't on site.
+   They still prove coverage, so they get a drawn establishment glyph rather than an
+   empty frame. Drawn, never a borrowed photo: no copyright, and it reads as designed. */
+const GLYPH={
+ 'Healthcare':'<rect x="12" y="20" width="40" height="34"/><rect x="26" y="8" width="12" height="12"/><path d="M32 11v6M29 14h6"/>',
+ 'Hospitality':'<rect x="16" y="14" width="32" height="40"/><path d="M8 22h48"/><path d="M24 26v6M32 26v6M40 26v6M24 38v6M32 38v6M40 38v6"/>',
+ 'Retail · Automotive':'<path d="M10 54V26l22-12 22 12v28"/><rect x="18" y="34" width="28" height="20"/><path d="M18 44h28"/>',
+ 'Resort':'<rect x="14" y="32" width="36" height="22"/><path d="M8 32l24-14 24 14"/><path d="M24 54V42h8v12"/>',
+ 'Residential':'<path d="M12 54V28l20-14 20 14v26"/><rect x="26" y="38" width="12" height="16"/><path d="M18 32h8v8h-8z"/>',
+ 'Commercial':'<rect x="14" y="12" width="36" height="42"/><path d="M22 20h6M36 20h6M22 30h6M36 30h6M22 40h6M36 40h6"/>',
+ 'General Contractor':'<path d="M14 54V18h28"/><path d="M14 18l30 10"/><path d="M42 28v10"/><rect x="34" y="38" width="16" height="16"/>',
+ 'Sector to confirm':'<rect x="16" y="18" width="32" height="36"/><path d="M26 30h12M26 40h12"/>'
+};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* Photo folders are named after the project ("BYD Angeles"), so paths contain spaces.
+   An UNQUOTED css url(...) is invalid the moment there is a space in it and the image
+   silently never loads - which looked like "no pictures". Always build the url through
+   this: encode the path, then quote it. */
+function cssUrl(rel){return "url('images/"+encodeURI(rel).replace(/'/g,"%27")+"')";}
+
+/* Hover card imagery. One photo fills the panel; two split it; three or more show a
+   large lead shot with two stacked beside it - enough to read the project at a glance
+   without waiting for the detail view. */
+function hoverPhotos(p){
+  const n=Math.min(p.photos.length,3);
+  const tile=k=>'<i style="background-image:'+cssUrl(p.photos[k][0])+'"></i>';
+  if(n===1)return '<div class="hc-img" style="background-image:'+cssUrl(p.photos[0][0])+'"></div>';
+  if(n===2)return '<div class="hc-grid two">'+tile(0)+tile(1)+'</div>';
+  return '<div class="hc-grid three">'+tile(0)+'<span>'+tile(1)+tile(2)+'</span></div>'+
+    (p.photos.length>3?'<div class="hc-more">+'+(p.photos.length-3)+' more</div>':'');
+}
+
+/* Attribution for licensed stock photos. CC BY requires credit + a link to the
+   licence + a note of any changes, shown wherever the image appears. A project
+   with its own photos has no photoCredit and renders nothing. */
+function creditHtml(p){
+  const c=p.photoCredit; if(!c)return '';
+  return '<div style="margin-top:.45rem;font-size:.68rem;opacity:.6;line-height:1.5">'+
+    'Photo: '+esc(c.by)+' &middot; <a href="'+esc(c.licenseUrl)+'" target="_blank" rel="noopener noreferrer" '+
+    'style="color:inherit">'+esc(c.license)+'</a>'+
+    (c.source?' &middot; <a href="'+esc(c.source)+'" target="_blank" rel="noopener noreferrer" style="color:inherit">source</a>':'')+
+    (c.changes?' &middot; '+esc(c.changes):'')+
+    '<br>Stock image of the location &mdash; not MSSI\'s own photograph.</div>';
+}
+
+function glyphSvg(sector,col,h){
+  return '<svg viewBox="0 0 64 64" width="100%" height="'+h+'" aria-hidden="true" '+
+    'style="display:block">'+
+    '<g fill="none" stroke="'+col+'" stroke-width="2" stroke-linecap="square" opacity=".85">'+
+    (GLYPH[sector]||GLYPH['Sector to confirm'])+'</g></svg>';
+}
+const SECTORS={
+ 'Healthcare':'#7FD1C8','Hospitality':'#E3C08A','Retail · Automotive':'#9FB8E8',
+ 'Resort':'#D9A0C0','Residential':'#C7D98E','Commercial':'#E8B36B',
+ 'General Contractor':'#A3ADA3','Sector to confirm':'#6E7A70'};
+const PROJECTS=[
+ {"name":"BYD Bauang","role":"Fabrication & installation","sector":"Retail · Automotive","loc":"Bauang, La Union","client":"GW Fortune","building":"BYD showroom","scope":"Showroom display, reception, client lounge","photos":[["projects/BYD Bauang/byd-bauang-01.jpg","BYD Bauang 1"],["projects/BYD Bauang/byd-bauang-02.jpg","BYD Bauang 2"],["projects/BYD Bauang/byd-bauang-03.jpg","BYD Bauang 3"]],"lat":16.53,"lng":120.33},
+ {"name":"BYD San Fernando","role":"Fabrication & installation","sector":"Retail · Automotive","loc":"San Fernando, La Union","client":"GW Fortune","building":"BYD showroom","scope":"Showroom display, reception, client lounge","photos":[["projects/BYD San Fernando/byd-san-fernando-01.jpg","BYD San Fernando 1"],["projects/BYD San Fernando/byd-san-fernando-02.jpg","BYD San Fernando 2"],["projects/BYD San Fernando/byd-san-fernando-03.jpg","BYD San Fernando 3"],["projects/BYD San Fernando/byd-san-fernando-04.jpg","BYD San Fernando 4"]],"lat":16.62,"lng":120.32},
+ {"name":"BYD Angeles","role":"Fabrication & installation","sector":"Retail · Automotive","loc":"Angeles, Pampanga","client":"GW Fortune","building":"BYD showroom","scope":"Showroom & display, reception, lounge","photos":[["projects/BYD Angeles/byd-angeles-01.jpg","BYD Angeles 1"],["projects/BYD Angeles/byd-angeles-02.jpg","BYD Angeles 2"],["projects/BYD Angeles/byd-angeles-03.jpg","BYD Angeles 3"],["projects/BYD Angeles/byd-angeles-04.jpg","BYD Angeles 4"],["projects/BYD Angeles/byd-angeles-05.jpg","BYD Angeles 5"]],"lat":15.15,"lng":120.59},
+ {"name":"Tivoli","role":"Fabrication & installation","sector":"Residential","loc":"Quezon City","client":"GW Fortune","building":"Tivoli","scope":"Closet and kitchen cabinets, one condominium unit","photos":[["projects/Tivoli/tivoli-01.jpg","Tivoli 1"],["projects/Tivoli/tivoli-02.jpg","Tivoli 2"],["projects/Tivoli/tivoli-03.jpg","Tivoli 3"],["projects/Tivoli/tivoli-04.jpg","Tivoli 4"]],"lat":14.63,"lng":121.03},
+ {"name":"Future World","role":"Fabrication & installation","sector":"Hospitality","loc":"Quezon City","client":"Future World","building":"Future World Suite","scope":"Reception counter, lobby feature wall, illuminated display joinery","photos":[["projects/Future World/new-future-point-suite-01.jpg","Future World 1"],["projects/Future World/new-future-point-suite-02.jpg","Future World 2"],["projects/Future World/new-future-point-suite-03.jpg","Future World 3"],["projects/Future World/new-future-point-suite-04.jpg","Future World 4"]],"lat":14.68,"lng":121.05},
+ {"name":"New Sinai MD Hospital","role":"Fabrication & installation","sector":"Healthcare","loc":"Sta. Rosa, Laguna","client":"New Sinai MD Hospital","building":"New Sinai MD Hospital","scope":"Nurse stations, triage, critical-care joinery","photos":[["projects/New Sinai MD Hospital/new-sinai-01.jpg","New Sinai MD Hospital 1"],["projects/New Sinai MD Hospital/new-sinai-02.jpg","New Sinai MD Hospital 2"],["projects/New Sinai MD Hospital/new-sinai-03.jpg","New Sinai MD Hospital 3"],["projects/New Sinai MD Hospital/new-sinai-04.jpg","New Sinai MD Hospital 4"],["projects/New Sinai MD Hospital/new-sinai-05.jpg","New Sinai MD Hospital 5"]],"lat":14.31,"lng":121.11},
+ {"name":"Radius","role":"Fabrication & installation","sector":"Resort","loc":"Nasugbu, Batangas","client":"Radius","building":"Radius","scope":"Villa pantry and marble feature wall","photos":[["projects/Radius/radius-01.jpg","Radius 1"],["projects/Radius/radius-02.jpg","Radius 2"],["projects/Radius/radius-03.jpg","Radius 3"],["projects/Radius/radius-04.jpg","Radius 4"]],"lat":14.07,"lng":120.63},
+ {"name":"WCLI Head Office","role":"Fabrication & installation","sector":"Commercial","loc":"Pasig City","client":"World Class Laminate, Inc.","building":"Head Office 608","scope":"Office casework","photos":[["projects/WCLI Head Office/wcli-head-office-01.jpg","WCLI Head Office 1"],["projects/WCLI Head Office/wcli-head-office-02.jpg","WCLI Head Office 2"],["projects/WCLI Head Office/wcli-head-office-03.jpg","WCLI Head Office 3"],["projects/WCLI Head Office/wcli-head-office-04.jpg","WCLI Head Office 4"],["projects/WCLI Head Office/wcli-head-office-05.jpg","WCLI Head Office 5"],["projects/WCLI Head Office/wcli-head-office-06.jpg","WCLI Head Office 6"],["projects/WCLI Head Office/wcli-head-office-07.jpg","WCLI Head Office 7"]],"lat":14.58,"lng":121.09},
+ {"name":"Private residences","role":"Fabrication & installation","sector":"Residential","loc":"Metro Manila and nearby provinces","client":"Private client","building":"Private homes","scope":"Kitchens, wardrobes, vanities and storage","photos":[["projects/Private residences/private-residences-01.jpg","Private residences 1"],["projects/Private residences/private-residences-02.jpg","Private residences 2"],["projects/Private residences/private-residences-03.jpg","Private residences 3"],["projects/Private residences/private-residences-04.jpg","Private residences 4"],["projects/Private residences/private-residences-05.jpg","Private residences 5"]]},
+ {"name":"Richcon Builders","role":"Fabrication & installation","sector":"General Contractor","loc":"Location to confirm","client":"Richcon Builders","building":"To confirm","scope":"To confirm","photos":[["projects/Richcon Builders/richcon-builders-01.jpg","Richcon Builders 1"]]},
+ {"name":"Araro Condominium","role":"Fabrication & installation","sector":"Commercial","loc":"Makati City","client":"Bigpat","building":"Araro Condominium","scope":"To confirm","photos":[["projects/Araro Condominium/araro-01.jpg","Araro Condominium 1"]],"lat":14.5547,"lng":121.0244},
+ {"name":"Philippine Realty","role":"Fabrication & installation","sector":"Commercial","loc":"Panay Ave., Quezon City","client":"Philippine Realty","building":"Philippine Realty SF1175","scope":"Vanity areas","photos":[["projects/Philippine Realty/philippine-realty-01.jpg","Philippine Realty 1"]],"lat":14.636,"lng":121.033},
+ {"name":"Privado residence","role":"Fabrication & installation","sector":"Residential","loc":"Location to confirm","client":"Private client","building":"Privado","scope":"To confirm","photos":[["projects/Privado residence/privado-residence-01.jpg","Privado residence 1"]]},
+ {"name":"Greenland residence","role":"Fabrication & installation","sector":"Residential","loc":"Cainta, Rizal","client":"Private client","building":"Greenland Executive Village","scope":"Walk-in wardrobe, slatted feature wall, shoe storage","photos":[["projects/Greenland residence/greenland-residence-01.jpg","Greenland residence 1"],["projects/Greenland residence/greenland-residence-02.jpg","Greenland residence 2"]],"lat":14.579,"lng":121.122},
+ {"name":"Lagen Island Resort","role":"Fabrication only","sector":"Resort","loc":"El Nido, Palawan","client":"To confirm","building":"Lagen Island Resort, El Nido","scope":"Fabrication only - scope to confirm","photos":[["projects/Lagen Island Resort/lagen-island-resort-01.jpg","Lagen Island Resort 1"]],"lat":11.19,"lng":119.32,"photoCredit":{"by":"geLowfish","license":"CC BY-SA 4.0","licenseUrl":"https://creativecommons.org/licenses/by-sa/4.0/","source":"https://commons.wikimedia.org/wiki/File:Lagen_Resort,_El_Nido_Palawan.jpg","changes":"resized and recompressed for web"}},
+ {"name":"Bayshore Residential Resort","role":"Fabrication only","sector":"Commercial","loc":"Parañaque City","client":"MFT","building":"Bayshore Residential Resort","scope":"Fabrication only — cabinets for one building, contracted by MFT","photos":[],"lat":14.529,"lng":120.982},
+ {"name":"Astra Mall","role":"Fabrication & installation","sector":"Commercial","loc":"Cebu City","client":"Reliabuilt","building":"Astra Mall","scope":"Mall fit-out - curved fluted columns, feature balustrade cladding","photos":[["projects/Astra Mall/astra-01.jpg","Astra Mall 1"],["projects/Astra Mall/astra-02.jpg","Astra Mall 2"],["projects/Astra Mall/astra-03.jpg","Astra Mall 3"]],"lat":10.3157,"lng":123.8854},
+ {"name":"Kaizen","role":"Fabrication & installation","sector":"Commercial","loc":"Cebu City","client":"Kaizen Engineering Construction","building":"To confirm","scope":"Toilet and vanity partitions","photos":[["projects/Kaizen/kaizen-01.jpg","Kaizen 1"],["projects/Kaizen/kaizen-02.jpg","Kaizen 2"]],"lat":10.3095,"lng":123.8931},
+ {"name":"Mactan","role":"Fabrication & installation","sector":"Commercial","loc":"Mactan, Cebu","client":"Reliabuilt","building":"To confirm","scope":"Toilet partitions","photos":[["projects/Mactan/mactan-01.jpg","Mactan 1"]],"lat":10.3103,"lng":123.9494}
+];
+
+/* ---------- Philippines as a module grid ---------- */
+const LAND=[
+ [[18.6,120.5],[18.4,121.4],[17.6,122.3],[16.4,122.3],[15.7,121.7],[14.9,121.9],[14.2,121.9],
+  [13.6,121.4],[13.4,120.9],[13.9,120.5],[14.6,120.3],[15.6,119.8],[16.6,120.1],[17.6,120.3]],
+ [[14.0,121.9],[13.7,123.2],[13.0,124.1],[12.6,124.2],[13.1,123.3],[13.6,122.4],[13.8,121.8]],
+ [[12.3,119.6],[11.4,119.1],[9.4,118.1],[8.8,117.6],[9.3,118.4],[11.2,119.9],[12.0,120.2]],
+ [[13.5,120.5],[12.2,120.6],[12.3,121.5],[13.4,121.4]],
+ [[11.8,121.9],[10.5,121.9],[10.4,122.7],[11.6,123.1]],
+ [[10.9,122.8],[9.3,122.9],[9.9,123.3],[10.8,123.3]],
+ [[11.3,123.7],[9.9,123.3],[10.3,124.1],[11.3,124.1]],
+ [[10.1,123.9],[9.5,124.1],[9.6,124.6],[10.1,124.5]],
+ [[12.6,124.2],[11.0,124.4],[10.7,125.1],[11.6,125.6],[12.6,125.3]],
+ [[9.9,123.9],[9.6,125.6],[8.9,126.5],[7.3,126.6],[5.9,126.2],[5.6,125.3],[6.4,124.3],
+  [6.9,122.1],[7.7,121.9],[8.1,123.4],[9.0,123.8]],
+];
+const LAT0=21.2,LAT1=4.3,LNG0=116.3,LNG1=127.2,MW=400,MH=620;
+const mxOf=l=>(l-LNG0)/(LNG1-LNG0)*MW-MW/2, myOf=l=>(LAT0-l)/(LAT0-LAT1)*MH-MH/2;
+
+/* ---- the real coastline, extruded into a solid ----
+   The old version approximated the country with ten hand-drawn polygons and
+   scattered dots inside them, which is why it read as texture rather than land.
+   PH is Natural Earth data written in by build-maps.js: 18 islands, 682 points. */
+const PH={"bounds":{"minLng":117.219,"maxLng":126.593,"minLat":5.599,"maxLat":18.615},"rings":[[[121.102,18.615],[121.254,18.563],[121.593,18.376],[121.846,18.295],[121.948,18.285],[122.038,18.328],[122.147,18.487],[122.221,18.501],[122.266,18.459],[122.3,18.403],[122.315,18.32],[122.294,18.234],[122.223,18.157],[122.179,18.064],[122.152,17.664],[122.237,17.435],[122.269,17.395],[122.362,17.345],[122.388,17.307],[122.408,17.178],[122.519,17.125],[122.426,16.823],[122.226,16.435],[122.214,16.352],[122.135,16.185],[121.975,16.158],[121.789,16.077],[121.595,15.933],[121.561,15.827],[121.609,15.726],[121.607,15.67],[121.49,15.51],[121.392,15.324],[121.399,15.267],[121.695,14.737],[121.627,14.682],[121.628,14.581],[121.649,14.481],[121.767,14.168],[121.8,14.114],[121.912,14.02],[122.08,13.947],[122.212,13.93],[122.228,13.979],[122.287,13.996],[122.274,14.045],[122.203,14.112],[122.2,14.148],[122.491,14.322],[122.627,14.318],[122.856,14.251],[122.934,14.188],[123.015,14.08],[123.071,13.96],[123.06,13.789],[123.102,13.75],[123.231,13.747],[123.297,13.836],[123.305,13.937],[123.259,13.975],[123.32,14.062],[123.432,13.966],[123.726,13.884],[123.816,13.837],[123.858,13.8],[123.806,13.722],[123.607,13.704],[123.55,13.646],[123.608,13.528],[123.704,13.432],[123.819,13.269],[123.817,13.192],[123.785,13.111],[123.873,13.117],[123.955,13.1],[124.069,13.032],[124.143,13.036],[124.137,12.791],[124.06,12.567],[123.962,12.595],[123.878,12.69],[123.895,12.805],[123.949,12.916],[123.918,12.94],[123.736,12.897],[123.627,12.912],[123.402,13.033],[123.311,13.044],[123.29,13.099],[123.296,13.216],[123.163,13.442],[122.863,13.617],[122.781,13.737],[122.595,13.908],[122.486,13.93],[122.468,13.887],[122.504,13.763],[122.508,13.657],[122.596,13.562],[122.668,13.395],[122.675,13.253],[122.6,13.194],[122.515,13.26],[122.498,13.364],[122.377,13.521],[122.205,13.648],[122.073,13.788],[121.778,13.938],[121.692,13.935],[121.501,13.842],[121.451,13.791],[121.446,13.712],[121.344,13.649],[121.204,13.64],[121.096,13.679],[121.006,13.758],[120.932,13.762],[120.841,13.885],[120.729,13.901],[120.637,13.804],[120.617,14.188],[120.688,14.291],[120.922,14.493],[120.952,14.558],[120.941,14.645],[120.888,14.716],[120.804,14.759],[120.708,14.777],[120.638,14.816],[120.584,14.881],[120.547,14.766],[120.589,14.483],[120.556,14.441],[120.439,14.453],[120.396,14.493],[120.365,14.608],[120.284,14.684],[120.251,14.793],[120.214,14.809],[120.138,14.8],[120.082,14.851],[120.045,14.978],[120.037,15.115],[119.933,15.431],[119.892,15.838],[119.86,15.906],[119.769,16.008],[119.773,16.255],[119.79,16.303],[119.831,16.327],[119.93,16.239],[120.033,16.185],[120.124,16.066],[120.16,16.048],[120.337,16.066],[120.369,16.11],[120.389,16.222],[120.325,16.4],[120.304,16.645],[120.321,16.762],[120.409,16.956],[120.427,17.377],[120.425,17.438],[120.372,17.535],[120.358,17.638],[120.505,18.163],[120.584,18.369],[120.6,18.508],[120.814,18.603],[120.925,18.585],[121.102,18.615]],[[126.006,9.321],[126.088,9.261],[126.193,9.277],[126.192,9.125],[126.305,8.952],[126.32,8.845],[126.263,8.744],[126.142,8.627],[126.14,8.596],[126.173,8.56],[126.282,8.539],[126.365,8.484],[126.38,8.327],[126.459,8.203],[126.425,7.927],[126.435,7.833],[126.57,7.677],[126.593,7.547],[126.582,7.248],[126.439,7.012],[126.294,6.882],[126.217,6.891],[126.192,6.853],[126.24,6.734],[126.189,6.31],[126.11,6.49],[126.08,6.733],[126.043,6.843],[125.985,6.944],[125.962,7.033],[125.901,7.117],[125.824,7.333],[125.774,7.322],[125.689,7.263],[125.641,7.105],[125.542,7.017],[125.401,6.796],[125.381,6.69],[125.433,6.607],[125.588,6.466],[125.671,6.225],[125.668,5.979],[125.456,5.664],[125.346,5.599],[125.288,5.632],[125.241,5.757],[125.233,5.808],[125.265,5.926],[125.268,6.033],[125.232,6.07],[125.174,6.047],[125.035,5.871],[124.927,5.875],[124.636,5.998],[124.213,6.233],[124.078,6.404],[124.05,6.533],[124.048,6.667],[123.988,6.863],[123.985,6.994],[124.045,7.114],[124.191,7.267],[124.213,7.332],[124.207,7.396],[124.068,7.578],[123.968,7.665],[123.765,7.743],[123.666,7.818],[123.553,7.832],[123.493,7.808],[123.476,7.665],[123.391,7.408],[123.178,7.529],[123.097,7.7],[122.99,7.546],[122.843,7.529],[122.819,7.558],[122.792,7.722],[122.714,7.774],[122.616,7.763],[122.474,7.639],[122.142,6.95],[122.098,6.914],[122.028,6.929],[121.964,6.968],[121.904,7.075],[121.925,7.2],[122.047,7.364],[122.132,7.81],[122.243,7.945],[122.337,8.028],[122.387,8.046],[122.589,8.093],[122.673,8.133],[122.804,8.134],[122.911,8.156],[122.996,8.221],[122.999,8.356],[123.051,8.434],[123.147,8.516],[123.293,8.541],[123.341,8.57],[123.435,8.703],[123.68,8.621],[123.783,8.548],[123.849,8.433],[123.877,8.189],[123.853,8.145],[123.753,8.058],[123.799,8.049],[123.997,8.159],[124.159,8.201],[124.198,8.23],[124.283,8.386],[124.325,8.508],[124.405,8.6],[124.451,8.606],[124.622,8.523],[124.731,8.563],[124.787,8.874],[124.806,8.924],[124.869,8.972],[124.944,8.957],[125.046,8.891],[125.141,8.869],[125.21,9.027],[125.376,8.992],[125.499,9.015],[125.533,9.141],[125.414,9.669],[125.471,9.757],[125.521,9.759],[125.642,9.654],[125.877,9.513],[125.955,9.427],[126.006,9.321]],[[123.131,9.064],[122.995,9.059],[122.948,9.108],[122.867,9.32],[122.665,9.41],[122.563,9.483],[122.411,9.694],[122.4,9.823],[122.471,9.962],[122.713,9.99],[122.856,10.087],[122.867,10.284],[122.817,10.504],[122.906,10.603],[122.958,10.698],[122.983,10.887],[123.257,10.994],[123.511,10.923],[123.568,10.781],[123.493,10.582],[123.407,10.459],[123.344,10.325],[123.296,10.125],[123.162,9.864],[123.15,9.606],[123.308,9.357],[123.321,9.273],[123.229,9.121],[123.131,9.064]],[[125.24,12.528],[125.31,12.446],[125.328,12.387],[125.32,12.322],[125.352,12.293],[125.481,12.252],[125.536,12.191],[125.503,12.136],[125.513,12.055],[125.457,11.953],[125.464,11.772],[125.497,11.714],[125.492,11.594],[125.609,11.323],[125.574,11.238],[125.627,11.234],[125.704,11.165],[125.749,11.074],[125.736,11.05],[125.674,11.121],[125.628,11.132],[125.432,11.113],[125.233,11.145],[125.156,11.267],[125.088,11.287],[125.034,11.341],[124.945,11.479],[124.917,11.558],[124.979,11.638],[124.995,11.765],[124.936,11.755],[124.884,11.775],[124.677,12.021],[124.529,12.079],[124.446,12.153],[124.385,12.244],[124.326,12.404],[124.295,12.569],[124.566,12.526],[124.84,12.535],[125.15,12.573],[125.24,12.528]],[[122.496,11.615],[122.613,11.564],[122.726,11.608],[122.838,11.596],[122.931,11.529],[122.895,11.441],[123.103,11.541],[123.158,11.536],[123.144,11.364],[123.12,11.287],[123.017,11.117],[122.803,10.99],[122.77,10.824],[122.673,10.801],[122.522,10.692],[122.198,10.623],[122.109,10.576],[121.954,10.444],[121.934,10.494],[121.98,10.639],[121.95,10.757],[121.964,10.872],[122.021,10.979],[122.051,11.097],[122.06,11.326],[122.104,11.643],[122.101,11.681],[122.067,11.724],[121.941,11.758],[121.891,11.791],[121.916,11.854],[121.964,11.897],[122.029,11.895],[122.291,11.772],[122.496,11.615]],[[117.311,8.44],[117.219,8.367],[117.229,8.457],[117.35,8.714],[117.885,9.241],[118.024,9.27],[118.115,9.347],[118.533,9.794],[118.728,10.035],[118.845,10.131],[119.024,10.354],[119.143,10.409],[119.224,10.477],[119.287,10.574],[119.313,10.687],[119.261,10.845],[119.306,10.974],[119.501,11.346],[119.553,11.314],[119.533,11.102],[119.562,11.046],[119.527,10.953],[119.684,10.552],[119.687,10.5],[119.595,10.407],[119.369,10.327],[119.285,10.252],[119.192,10.061],[118.949,9.993],[118.782,9.916],[118.755,9.862],[118.774,9.767],[118.57,9.423],[118.435,9.256],[118.35,9.201],[118.229,9.168],[118.134,9.101],[117.99,8.877],[117.78,8.729],[117.572,8.642],[117.517,8.538],[117.311,8.44]],[[120.704,13.479],[120.755,13.471],[120.915,13.501],[120.981,13.486],[121.025,13.429],[121.122,13.381],[121.203,13.432],[121.284,13.374],[121.357,13.265],[121.523,13.131],[121.539,13.089],[121.49,13.02],[121.475,12.932],[121.48,12.837],[121.541,12.638],[121.412,12.423],[121.394,12.301],[121.322,12.304],[121.237,12.219],[121.117,12.253],[121.083,12.339],[120.963,12.447],[120.922,12.512],[120.899,12.646],[120.796,12.748],[120.769,12.841],[120.764,12.97],[120.651,13.169],[120.508,13.26],[120.455,13.394],[120.338,13.412],[120.353,13.473],[120.401,13.517],[120.468,13.522],[120.704,13.479]],[[124.575,11.343],[124.644,11.308],[124.724,11.322],[124.821,11.401],[124.93,11.373],[125.027,11.212],[125.044,11.135],[125.04,10.952],[125.013,10.786],[125.164,10.637],[125.188,10.585],[125.197,10.457],[125.268,10.308],[125.253,10.264],[125.148,10.272],[125.143,10.189],[125.105,10.218],[125.044,10.323],[124.987,10.368],[125.027,10.033],[124.929,10.096],[124.813,10.135],[124.781,10.168],[124.79,10.328],[124.738,10.44],[124.797,10.732],[124.739,10.88],[124.663,10.962],[124.616,10.962],[124.503,10.904],[124.446,10.924],[124.366,11.371],[124.308,11.486],[124.331,11.535],[124.374,11.515],[124.436,11.457],[124.548,11.395],[124.575,11.343]],[[123.37,9.45],[123.332,9.423],[123.316,9.489],[123.404,9.889],[123.386,9.967],[123.514,10.14],[123.593,10.303],[123.711,10.474],[123.726,10.562],[123.832,10.731],[123.93,10.964],[123.925,11.041],[123.95,11.079],[123.967,11.187],[124.039,11.274],[124.058,11.217],[124.037,11.107],[124.053,10.926],[124.028,10.768],[124.051,10.586],[124.005,10.4],[123.952,10.317],[123.789,10.221],[123.7,10.128],[123.643,10.02],[123.634,9.922],[123.494,9.589],[123.37,9.45]],[[124.594,9.787],[124.584,9.75],[124.478,9.748],[124.403,9.654],[124.36,9.63],[124.122,9.599],[123.936,9.624],[123.872,9.676],[123.817,9.817],[123.909,9.92],[124.06,10],[124.094,10.061],[124.173,10.135],[124.336,10.16],[124.577,10.027],[124.555,9.879],[124.594,9.787]],[[123.717,12.287],[123.908,12.169],[124.04,11.967],[124.046,11.752],[123.848,11.914],[123.725,11.952],[123.736,12.003],[123.668,12.069],[123.612,12.09],[123.531,12.197],[123.474,12.217],[123.419,12.194],[123.293,12.036],[123.158,11.926],[123.267,12.395],[123.236,12.583],[123.463,12.501],[123.559,12.445],[123.575,12.407],[123.717,12.287]],[[124.354,13.632],[124.327,13.567],[124.295,13.59],[124.248,13.587],[124.175,13.532],[124.057,13.606],[124.039,13.663],[124.124,13.79],[124.123,13.98],[124.186,14.06],[124.225,14.078],[124.308,13.947],[124.417,13.871],[124.396,13.75],[124.404,13.679],[124.354,13.632]],[[122.093,6.428],[121.959,6.416],[121.88,6.518],[121.872,6.563],[121.809,6.614],[121.832,6.664],[121.915,6.676],[122.058,6.741],[122.288,6.639],[122.324,6.602],[122.252,6.58],[122.201,6.483],[122.093,6.428]],[[120.1,12.168],[120.155,12.152],[120.194,12.167],[120.228,12.22],[120.261,12.142],[120.341,12.077],[120.315,12.012],[120.174,12.02],[120.1,11.994],[120.011,12.008],[119.866,12.199],[119.886,12.3],[119.916,12.319],[120.1,12.168]],[[121.915,13.54],[121.996,13.547],[122.115,13.463],[122.122,13.365],[122.005,13.205],[121.829,13.329],[121.815,13.424],[121.866,13.566],[121.915,13.54]],[[121.159,6.076],[121.214,6.004],[121.283,6.022],[121.392,6.002],[121.411,5.94],[121.294,5.87],[121.218,5.943],[121.083,5.893],[121.019,5.923],[120.931,5.896],[120.876,5.953],[120.898,6.007],[121.038,6.096],[121.159,6.076]],[[125.69,9.914],[125.673,9.886],[125.649,9.944],[125.495,10.119],[125.522,10.192],[125.525,10.31],[125.667,10.44],[125.685,10.392],[125.647,10.245],[125.703,10.072],[125.69,9.914]],[[122.094,12.355],[122.014,12.106],[121.96,12.191],[121.982,12.245],[121.936,12.29],[121.923,12.331],[121.941,12.385],[121.989,12.435],[122.002,12.599],[122.104,12.651],[122.145,12.653],[122.094,12.355]]]};/*__PH__*/
+
+const THICK=26;                       /* how deep the landmass sits, in model units */
+const ISLANDS=PH.rings.map(r=>{
+  const pts=r.map(([lng,lat])=>({x:mxOf(lng),y:myOf(lat)}));
+  let cx=0,cy=0;pts.forEach(p=>{cx+=p.x;cy+=p.y;});
+  cx/=pts.length;cy/=pts.length;
+  /* signed area tells us the winding, so wall lighting knows which way is out */
+  let a2=0;for(let i=0;i<pts.length;i++){const q=pts[(i+1)%pts.length];a2+=pts[i].x*q.y-q.x*pts[i].y;}
+  return {pts,cx,cy,ccw:a2>0,d:Math.hypot(cx,cy),size:Math.abs(a2)/2};
+}).sort((a,b)=>b.size-a.size);
+let DMAX=Math.max(1,...ISLANDS.map(i=>i.d));   /* recomputed after re-centring below */
+const HQP={x:mxOf(HQ.lng),y:myOf(HQ.lat)};
+const PINS=[];PROJECTS.forEach((p,i)=>{if(p.lat!=null)PINS.push({i,x:mxOf(p.lng),y:myOf(p.lat),name:p.name,sector:p.sector});});
+
+/* Re-centre on the land itself.
+   mxOf/myOf map a lat/lng box that is taller and wider than the country actually
+   is, so the model sat high with dead space under it. Shift everything so the
+   coastline's own bounding box is centred on the origin, and remember its real
+   extent so the camera fits to the land rather than to the empty box. */
+let EXT_W=MW, EXT_H=MH;
+(function recentre(){
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  ISLANDS.forEach(is=>is.pts.forEach(p=>{
+    if(p.x<minx)minx=p.x; if(p.x>maxx)maxx=p.x;
+    if(p.y<miny)miny=p.y; if(p.y>maxy)maxy=p.y;}));
+  if(minx>maxx)return;
+  const ox=(minx+maxx)/2, oy=(miny+maxy)/2;
+  ISLANDS.forEach(is=>{
+    is.pts.forEach(p=>{p.x-=ox;p.y-=oy;});
+    is.cx-=ox;is.cy-=oy;is.d=Math.hypot(is.cx,is.cy);});
+  HQP.x-=ox;HQP.y-=oy;
+  PINS.forEach(p=>{p.x-=ox;p.y-=oy;});
+  EXT_W=maxx-minx; EXT_H=maxy-miny;
+  DMAX=Math.max(1,...ISLANDS.map(i=>i.d));
+})();
+
+/* ---------- camera ---------- */
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),stage=document.getElementById('stage');
+let yaw=-.2,tYaw=-.2,pitch=1.0,tPitch=1.0,zoom=1,tZoom=1,panX=0,panY=0,tPanX=0,tPanY=0;
+let W=0,H=0,BASE=1,t0=performance.now(),hover=-1,hoverCard=-1,secOn=null,sway=0;
+let OFFX=0;                              /* see centreOffset() */
+let yawE=-.2,pitchE=1.0;                 /* eased camera, what project() actually uses */
+let mouse={x:-9e9,y:-9e9},mode='',lastX=0,lastY=0,moved=0;
+/* recentre() puts the coastline's bounding box on the origin and project()
+   centres it on W/2 — the whole frame. But the heading block and the legend sit
+   on top of the left of that frame, up to 460px of it, so the land ends up
+   centred behind the text with all the spare room collecting on the right. It
+   reads as misplaced rather than airy.
+   The land should be centred in the part of the frame nothing covers. Measured
+   from the overlays rather than hard-coded, so it tracks their own clamps. If
+   they take up most of the width there is no uncovered area worth centring in —
+   which is the case on a phone — so it stays put. */
+function centreOffset(){
+  let cover=0;
+  [document.querySelector('.hdr'), document.getElementById('rail')].forEach(function(el){
+    if(!el) return;
+    var r=el.getBoundingClientRect();
+    if(r.width>0) cover=Math.max(cover, r.right);
+  });
+  if(W-cover < W*0.55) cover=0;
+  OFFX=cover/2;
+}
+function resize(){W=innerWidth;H=innerHeight;
+  const dpr=Math.min(devicePixelRatio||1,2);
+  cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  /* fit to the land's real extent, not the empty lat/lng box.
+     The tilt squashes the model vertically, so the height budget is divided by
+     the same .82 the projection applies. */
+  BASE=Math.min(W/EXT_W, H/(EXT_H*Math.sin(pitch)*.82+THICK*2))*.80;
+  centreOffset();
+  clampPan();}
+function project(x,y,z){
+  const ca=Math.cos(yaw),sa=Math.sin(yaw);
+  const rx=x*ca-y*sa, ry=x*sa+y*ca;
+  const st=Math.sin(pitch),ct=Math.cos(pitch);
+  const depth=ry*ct, persp=1+depth/1500, s=BASE*zoom*persp;
+  return {sx:W/2+OFFX+panX+rx*s, sy:H/2+panY+(ry*st-z)*s*.82, d:depth, s:persp};
+}
+/* the model must always stay reachable — this is what was missing before */
+function clampPan(){
+  const lx=W*.45+MW*BASE*tZoom*.35, ly=H*.45+MH*BASE*tZoom*.3;
+  tPanX=Math.max(-lx,Math.min(lx,tPanX));tPanY=Math.max(-ly,Math.min(ly,tPanY));
+}
+/* ---------- draw ---------- */
+function draw(now){
+  const el=(now-t0)/1000;
+  zoom+=(tZoom-zoom)*.14;
+  panX+=(tPanX-panX)*.16; panY+=(tPanY-panY)*.16;
+
+  /* Camera eases toward whatever the orbit drag set, then a slow breath of
+     movement on top so the model reads as a solid object rather than a picture. */
+  yawE+=(tYaw-yawE)*.18; pitchE+=(tPitch-pitchE)*.18;
+  sway+=0.0022;
+  yaw=yawE+Math.sin(sway)*0.075;
+  pitch=pitchE+Math.cos(sway*0.62)*0.022;
+
+  ctx.clearRect(0,0,W,H);
+
+  /* ground grid — the CAD viewport the model sits on */
+  ctx.lineWidth=1;
+  for(let g=-MW;g<=MW;g+=50){
+    const a=project(g,-MH,0),b=project(g,MH,0);
+    ctx.strokeStyle='rgba(244,241,233,.045)';ctx.beginPath();ctx.moveTo(a.sx,a.sy);ctx.lineTo(b.sx,b.sy);ctx.stroke();}
+  for(let g=-MH;g<=MH;g+=50){
+    const a=project(-MW,g,0),b=project(MW,g,0);
+    ctx.strokeStyle='rgba(244,241,233,.045)';ctx.beginPath();ctx.moveTo(a.sx,a.sy);ctx.lineTo(b.sx,b.sy);ctx.stroke();}
+
+  /* the mobilization zones, held as faint reference rings on the water */
+  [110,240,400].forEach((r,k)=>{
+    ctx.beginPath();ctx.strokeStyle='rgba(227,192,138,'+(.055-k*.012)+')';
+    for(let a=0;a<=64;a++){const th=a/64*Math.PI*2;
+      const p=project(HQP.x+Math.cos(th)*r,HQP.y+Math.sin(th)*r,0);
+      a?ctx.lineTo(p.sx,p.sy):ctx.moveTo(p.sx,p.sy);}
+    ctx.stroke();});
+
+  /* ---- the landmass: a solid, extruded, lit ----
+     Islands rise into place far-to-near. Each is drawn as side walls first
+     (sorted back to front so nearer walls overlap farther ones) then the top
+     face, then a hairline along the shore where the top meets the wall. */
+  const LIGHT={x:-.55,y:-.84};                 /* where the key light comes from */
+  const islandDraw=ISLANDS.map(is=>{
+    const rise=Math.min(1,Math.max(0,(el-.15-is.d/DMAX*.55)/.6));
+    return {is,rise,drop:(1-rise)*-120,depth:project(is.cx,is.cy,0).d};
+  }).sort((a,b)=>a.depth-b.depth);
+
+  for(const o of islandDraw){
+    if(o.rise<=0)continue;
+    const {is}=o, n=is.pts.length, A=o.rise;
+    const top=is.pts.map(p=>project(p.x,p.y,THICK+o.drop));
+    const bot=is.pts.map(p=>project(p.x,p.y,o.drop));
+
+    /* contact shadow on the grid plane */
+    ctx.save();ctx.globalAlpha=.5*A;
+    ctx.beginPath();
+    bot.forEach((p,i)=>i?ctx.lineTo(p.sx,p.sy+6):ctx.moveTo(p.sx,p.sy+6));
+    ctx.closePath();ctx.fillStyle='rgba(0,0,0,.5)';ctx.filter='blur(6px)';ctx.fill();
+    ctx.restore();
+
+    /* side walls */
+    const walls=[];
+    for(let i=0;i<n;i++){
+      const j=(i+1)%n;
+      const ex=is.pts[j].x-is.pts[i].x, ey=is.pts[j].y-is.pts[i].y;
+      const L=Math.hypot(ex,ey)||1;
+      let nx=ey/L, ny=-ex/L; if(is.ccw){nx=-nx;ny=-ny;}      /* outward normal */
+      walls.push({i,j,d:(top[i].d+top[j].d)/2,lit:Math.max(0,nx*LIGHT.x+ny*LIGHT.y)});
+    }
+    walls.sort((a,b)=>a.d-b.d);
+    for(const w of walls){
+      const l=0.10+0.46*w.lit;
+      ctx.beginPath();
+      ctx.moveTo(top[w.i].sx,top[w.i].sy);ctx.lineTo(top[w.j].sx,top[w.j].sy);
+      ctx.lineTo(bot[w.j].sx,bot[w.j].sy);ctx.lineTo(bot[w.i].sx,bot[w.i].sy);
+      ctx.closePath();
+      ctx.fillStyle='rgba('+Math.round(26+l*70)+','+Math.round(32+l*76)+','+Math.round(28+l*62)+','+A+')';
+      ctx.fill();
+    }
+
+    /* top face, with a soft gradient so it never reads flat */
+    ctx.beginPath();
+    top.forEach((p,i)=>i?ctx.lineTo(p.sx,p.sy):ctx.moveTo(p.sx,p.sy));
+    ctx.closePath();
+    const c=project(is.cx,is.cy,THICK+o.drop);
+    const rad=Math.max(40,Math.hypot(top[0].sx-c.sx,top[0].sy-c.sy));
+    const g=ctx.createRadialGradient(c.sx-rad*.35,c.sy-rad*.5,0,c.sx,c.sy,rad*1.7);
+    g.addColorStop(0,'rgba(104,120,104,'+A+')');
+    g.addColorStop(1,'rgba(58,70,60,'+A+')');
+    ctx.fillStyle=g;ctx.fill();
+
+    /* shoreline: the lit edge where the top meets the sea */
+    ctx.strokeStyle='rgba(227,192,138,'+(.5*A)+')';ctx.lineWidth=1;ctx.stroke();
+  }
+
+  /* ---- the signal ----
+     Rings leaving the factory and sweeping out over the country. Drawn AFTER the
+     landmass and slightly above its top face, so the pulse washes across the
+     islands instead of being buried under them. */
+  {
+    const RINGS=3, PERIOD=3.8, RMAX=560, z=THICK+2;
+    for(let k=0;k<RINGS;k++){
+      const t=((el/PERIOD)+k/RINGS)%1;
+      const r=18+t*RMAX;
+      const a=Math.min(1,t*7)*(1-t)*(1-t)*0.34;      /* snap on, ease away - kept subtle */
+      if(a<=0.004)continue;
+      ctx.beginPath();
+      for(let i=0;i<=72;i++){const th=i/72*Math.PI*2;
+        const p=project(HQP.x+Math.cos(th)*r,HQP.y+Math.sin(th)*r,z);
+        i?ctx.lineTo(p.sx,p.sy):ctx.moveTo(p.sx,p.sy);}
+      /* cream, not gold: the signal comes off the white plant marker at the
+         centre, so it should read as the same light spreading out */
+      ctx.strokeStyle='rgba(244,241,233,'+a.toFixed(3)+')';
+      ctx.lineWidth=1+1.8*(1-t);
+      ctx.stroke();
+    }
+    /* the emitter itself, breathing in time with the rings */
+    const bt=(el/PERIOD)%1;
+    const hp=project(HQP.x,HQP.y,z);
+    const eg=ctx.createRadialGradient(hp.sx,hp.sy,0,hp.sx,hp.sy,26+18*(1-bt));
+    eg.addColorStop(0,'rgba(244,241,233,'+(0.16*(1-bt)).toFixed(3)+')');
+    eg.addColorStop(1,'rgba(244,241,233,0)');
+    ctx.fillStyle=eg;ctx.beginPath();ctx.arc(hp.sx,hp.sy,26+18*(1-bt),0,7);ctx.fill();
+  }
+
+  /* delivery routes: factory → every pinned project, with a travelling pulse */
+  const routeT=el*.22;
+  PINS.forEach((pin,k)=>{
+    const col=SECTORS[pin.sector]||'#E3C08A';
+    const live=!secOn||secOn===pin.sector;
+    const grow=Math.min(1,Math.max(0,(el-.9-k*.06)/.7));
+    if(grow<=0)return;
+    const lift=Math.hypot(pin.x-HQP.x,pin.y-HQP.y)*.42+30;
+    ctx.beginPath();ctx.lineWidth=1;
+    ctx.strokeStyle=hex(col,live?.3:.07);
+    const N=26,end=grow*N;
+    for(let s=0;s<=end;s++){const t=s/N;
+      const q=project(HQP.x+(pin.x-HQP.x)*t, HQP.y+(pin.y-HQP.y)*t, THICK+Math.sin(Math.PI*t)*lift);
+      s?ctx.lineTo(q.sx,q.sy):ctx.moveTo(q.sx,q.sy);}
+    ctx.stroke();
+    if(grow>=1&&live){
+      const t=(routeT+k*.17)%1;
+      const q=project(HQP.x+(pin.x-HQP.x)*t, HQP.y+(pin.y-HQP.y)*t, THICK+Math.sin(Math.PI*t)*lift);
+      const gl=ctx.createRadialGradient(q.sx,q.sy,0,q.sx,q.sy,7);
+      gl.addColorStop(0,hex(col,.9));gl.addColorStop(1,hex(col,0));
+      ctx.fillStyle=gl;ctx.beginPath();ctx.arc(q.sx,q.sy,7,0,7);ctx.fill();
+    }
+  });
+
+  /* factory */
+  const fb=project(HQP.x,HQP.y,THICK), ft=project(HQP.x,HQP.y,THICK+74);
+  ctx.strokeStyle='rgba(244,241,233,.75)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(fb.sx,fb.sy);ctx.lineTo(ft.sx,ft.sy);ctx.stroke();
+  const fg=ctx.createRadialGradient(ft.sx,ft.sy,0,ft.sx,ft.sy,20);
+  fg.addColorStop(0,'rgba(244,241,233,.55)');fg.addColorStop(1,'rgba(244,241,233,0)');
+  ctx.fillStyle=fg;ctx.beginPath();ctx.arc(ft.sx,ft.sy,20,0,7);ctx.fill();
+  ctx.fillStyle='#F4F1E9';ctx.beginPath();ctx.arc(ft.sx,ft.sy,4.5,0,7);ctx.fill();
+  ctx.font='500 10px Jost,system-ui,sans-serif';ctx.fillStyle='rgba(244,241,233,.75)';
+  ctx.fillText('FACTORY · PASIG',ft.sx+10,ft.sy-6);
+
+  /* towers */
+  hover=-1;
+  const towers=PINS.map(pin=>{
+    const grow=Math.min(1,Math.max(0,(el-1.1)/.6));
+    return {pin,base:project(pin.x,pin.y,THICK),top:project(pin.x,pin.y,THICK+50*grow),grow};});
+  towers.sort((a,b)=>a.base.d-b.base.d);
+  for(const o of towers){
+    if(o.grow<=0)continue;
+    const live=!secOn||secOn===o.pin.sector;
+    if(live&&Math.hypot(mouse.x-o.top.sx,mouse.y-o.top.sy)<22)hover=o.pin.i;
+    const on=hover===o.pin.i||hoverCard===o.pin.i;
+    const col=SECTORS[o.pin.sector]||'#E3C08A';
+    const A=live?1:.18;
+    ctx.beginPath();ctx.strokeStyle=hex(col,(on?.6:.24)*A);ctx.lineWidth=1;
+    ctx.ellipse(o.base.sx,o.base.sy,9*o.base.s*zoom*.6,9*o.base.s*zoom*.6*Math.cos(pitch)*.9,0,0,7);ctx.stroke();
+    const g=ctx.createLinearGradient(o.base.sx,o.base.sy,o.top.sx,o.top.sy);
+    g.addColorStop(0,hex(col,.1*A));g.addColorStop(1,hex(col,(on?1:.8)*A));
+    ctx.beginPath();ctx.strokeStyle=g;ctx.lineWidth=on?2.6:1.6;
+    ctx.moveTo(o.base.sx,o.base.sy);ctx.lineTo(o.top.sx,o.top.sy);ctx.stroke();
+    const rr=(on?7:4.8)*o.top.s;
+    const gl=ctx.createRadialGradient(o.top.sx,o.top.sy,0,o.top.sx,o.top.sy,rr*3.4);
+    gl.addColorStop(0,hex(col,(on?.55:.3)*A));gl.addColorStop(1,hex(col,0));
+    ctx.fillStyle=gl;ctx.beginPath();ctx.arc(o.top.sx,o.top.sy,rr*3.4,0,7);ctx.fill();
+    ctx.fillStyle=hex(col,A);ctx.beginPath();ctx.arc(o.top.sx,o.top.sy,rr,0,7);ctx.fill();
+    o._x=o.top.sx;o._y=o.top.sy;
+  }
+  stage.style.cursor=hover>=0?'pointer':(mode?'grabbing':'grab');
+  syncHover(towers);
+  requestAnimationFrame(draw);
+}
+function hex(c,a){const n=parseInt(c.slice(1),16);
+  return 'rgba('+(n>>16)+','+(n>>8&255)+','+(n&255)+','+a+')';}
+
+let lastH=-2;
+function syncHover(towers){
+  const h=hover>=0?hover:hoverCard;
+  if(h!==lastH){lastH=h;
+    document.querySelectorAll('.pcard').forEach(c=>c.classList.toggle('on',+c.dataset.i===h));
+    showHover(h);}
+  if(h>=0&&hover>=0){const t=towers.find(o=>o.pin.i===h);if(t)placeHover(t._x,t._y);}
+}
+const hc=document.getElementById('hc');
+function showHover(i){
+  if(i<0){hc.classList.remove('on');return;}
+  const p=PROJECTS[i],col=SECTORS[p.sector]||'#E3C08A';
+  document.getElementById('hcIn').innerHTML=
+    (p.photos.length?hoverPhotos(p)
+      :'<div class="hc-plate">'+glyphSvg(p.sector,col,64)+'</div>')+
+    '<div class="hc-b"><span class="s" style="color:'+col+'">'+p.sector+(p.role==='Fabrication only'?'<span class="role">fab only</span>':'')+'</span>'+
+    '<span class="n">'+p.name+'</span><span class="l">'+p.loc+'</span><span class="c">'+
+    (p.client&&p.client!==p.name?p.client+' &middot; ':'')+
+    (p.photos.length?p.photos.length+' photos &middot; click to open':'click for details')+'</span></div>';
+  hc.classList.add('on');
+}
+function placeHover(x,y){
+  const w=hc.offsetWidth||262,h=hc.offsetHeight||200;
+  let lx=x+18,ly=y-h-14;
+  if(lx+w>W-12)lx=x-w-18;
+  if(ly<12)ly=y+18;
+  hc.style.left=Math.max(12,Math.min(W-w-12,lx))+'px';
+  hc.style.top=Math.max(12,Math.min(H-h-12,ly))+'px';
+}
+/* ---------- interaction: rotate / pan / zoom ---------- */
+function zoomBy(f,cx,cy){
+  const z0=tZoom,z=Math.max(.6,Math.min(5,tZoom*f));
+  if(z===z0)return;
+  const ax=cx==null?W/2:cx, ay=cy==null?H/2:cy;
+  tPanX=ax-(ax-tPanX)*(z/z0); tPanY=ay-(ay-tPanY)*(z/z0);
+  tZoom=z;clampPan();
+  document.getElementById('zlbl').textContent=Math.round(z*100)+'%';
+}
+function resetView(){tZoom=1;tPanX=0;tPanY=0;tYaw=-.2;tPitch=1.0;
+  document.getElementById('zlbl').textContent='100%';}
+stage.addEventListener('contextmenu',e=>e.preventDefault());
+/* Wheel behaviour depends on where this is running.
+   Standalone (its own tab): nothing to scroll, so the wheel zooms.
+   Embedded in the website: the wheel belongs to the PAGE — never swallow it, or
+   the visitor gets stuck scrolling inside the map. Ctrl/Cmd + wheel zooms, and a
+   nudge appears the first few times someone wheels without it. */
+const EMBEDDED = window.self !== window.top;
+/* Embedded, "back to MSSI" is meaningless — you are already there. Swap it for a
+   way into the full-screen version, which is this same page on its own. */
+if(EMBEDDED){
+  /* The heading stays — it is the section's heading now, sitting over the canvas
+     instead of stacked above the frame, so the map keeps its full height. */
+  const b=document.querySelector('.backlink');
+  if(b){b.setAttribute('href','where-weve-built.html');b.setAttribute('target','_top');
+        b.innerHTML='Open full screen <span>&#8599;</span>';}
+  const h=document.getElementById('hint');
+  if(h)h.innerHTML='drag to move &nbsp;·&nbsp; ⟳ to turn &nbsp;·&nbsp; ctrl + scroll to zoom &nbsp;·&nbsp; hover a tower';
+}
+let zoomNudgeUntil=0;
+function zoomNudge(){
+  const el=document.getElementById('zoomNudge');
+  if(!el)return;
+  el.classList.add('on');
+  zoomNudgeUntil=performance.now()+1400;
+  clearTimeout(zoomNudge._t);
+  zoomNudge._t=setTimeout(()=>el.classList.remove('on'),1400);
+}
+stage.addEventListener('wheel',e=>{
+  if(EMBEDDED&&!(e.ctrlKey||e.metaKey)){zoomNudge();return;}  /* let the page scroll */
+  e.preventDefault();zoomBy(e.deltaY<0?1.12:.89,e.clientX,e.clientY);hideHint();
+},{passive:false});
+/* Left-drag pans, exactly as before. Right-drag or Shift-drag orbits.
+   Rotation used to be how the model got lost, so it is fenced in: yaw is free but
+   pitch is clamped well short of edge-on and straight-down, and Reset returns
+   everything including the angle. */
+const PITCH_MIN=0.42, PITCH_MAX=1.32;
+function clampPitch(){tPitch=Math.max(PITCH_MIN,Math.min(PITCH_MAX,tPitch));}
+/* Turn mode: click the ⟳ button and plain dragging orbits instead of panning.
+   Right-drag and Shift-drag still orbit at any time, but neither is discoverable,
+   and right-drag is unreliable on trackpads - the button is the one that always works. */
+let orbitMode=false;
+function toggleOrbit(){
+  orbitMode=!orbitMode;
+  const b=document.getElementById('orbitBtn');
+  b.setAttribute('aria-pressed',orbitMode?'true':'false');
+  b.style.borderColor=orbitMode?'var(--accent)':'';
+  b.style.background=orbitMode?'var(--bg-3)':'';
+  b.style.color=orbitMode?'var(--accent)':'';
+  document.getElementById('hint').textContent=orbitMode
+    ? 'turn mode on — drag to turn the model'
+    : 'drag to move · scroll to zoom · hover a tower';
+  document.getElementById('hint').classList.remove('gone');
+}
+stage.addEventListener('pointerdown',e=>{
+  mode=(orbitMode||e.button===2||e.shiftKey)?'orbit':'pan';
+  moved=0;lastX=e.clientX;lastY=e.clientY;
+  stage.classList.add('pan');stage.setPointerCapture(e.pointerId);});
+stage.addEventListener('pointermove',e=>{
+  mouse={x:e.clientX,y:e.clientY};
+  if(!mode)return;
+  const dx=e.clientX-lastX, dy=e.clientY-lastY;
+  lastX=e.clientX;lastY=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);
+  if(mode==='orbit'){tYaw+=dx*0.006;tPitch-=dy*0.005;clampPitch();}
+  else {tPanX+=dx;tPanY+=dy;clampPan();}
+  hideHint();});
+stage.addEventListener('pointerup',e=>{
+  if(moved<5&&hover>=0)openOv(hover);
+  mode='';stage.classList.remove('pan');});
+stage.addEventListener('pointerleave',()=>{mode='';stage.classList.remove('pan');mouse={x:-9e9,y:-9e9};});
+/* touch: 1 finger rotate, 2 fingers pinch-zoom + pan */
+let pD=0,pC=null;
+stage.addEventListener('touchstart',e=>{if(e.touches.length===2){
+  pD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+  pC={x:(e.touches[0].clientX+e.touches[1].clientX)/2,y:(e.touches[0].clientY+e.touches[1].clientY)/2};mode='';}},{passive:true});
+stage.addEventListener('touchmove',e=>{if(e.touches.length===2&&pD){
+  const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+  const c={x:(e.touches[0].clientX+e.touches[1].clientX)/2,y:(e.touches[0].clientY+e.touches[1].clientY)/2};
+  zoomBy(d/pD,c.x,c.y);
+  tPanX+=c.x-pC.x;tPanY+=c.y-pC.y;clampPan();
+  pD=d;pC=c;hideHint();}},{passive:true});
+stage.addEventListener('touchend',()=>{pD=0;pC=null;});
+let hintT=setTimeout(hideHint,8000);
+function hideHint(){document.getElementById('hint').classList.add('gone');clearTimeout(hintT);}
+
+/* ---------- sector rail ---------- */
+function drawRail(){
+  const counts={};PROJECTS.forEach(p=>counts[p.sector]=(counts[p.sector]||0)+1);
+  document.getElementById('rail').innerHTML=Object.keys(SECTORS)
+    .filter(s=>counts[s])
+    .map(s=>'<button class="sec" data-s="'+s+'" onclick="pickSector(\''+s.replace(/'/g,"\\'")+'\')">'+
+      '<span class="sw" style="background:'+SECTORS[s]+';color:'+SECTORS[s]+'"></span>'+
+      '<span class="n">'+s+'</span><span class="c">'+counts[s]+'</span></button>').join('');
+}
+function pickSector(s){
+  secOn=(secOn===s)?null:s;
+  document.querySelectorAll('.sec').forEach(b=>{
+    b.classList.toggle('on',b.dataset.s===secOn);
+    b.classList.toggle('off',!!secOn&&b.dataset.s!==secOn);});
+  drawList();
+}
+/* ---------- drawer ---------- */
+function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');}
+function drawList(){
+  const mk=(p,i)=>{
+    const col=SECTORS[p.sector]||'#E3C08A';
+    const vis=p.photos.length?'<span class="th" style="background-image:'+cssUrl(p.photos[0][0])+'"></span>'
+      :'<span class="plate">'+glyphSvg(p.sector,col,34)+'</span>';
+    return '<button class="pcard" data-i="'+i+'" onclick="openOv('+i+')" '+
+      'onmouseenter="hoverCard='+i+'" onmouseleave="hoverCard=-1">'+vis+
+      '<span><span class="s" style="color:'+col+'">'+p.sector+'</span>'+
+      '<span class="n">'+p.name+'</span><span class="l">'+p.loc+'</span></span></button>';};
+  const shown=PROJECTS.map((p,i)=>({p,i})).filter(o=>!secOn||o.p.sector===secOn);
+  let html='';
+  Object.keys(SECTORS).forEach(s=>{
+    const g=shown.filter(o=>o.p.sector===s);
+    if(!g.length)return;
+    html+='<div class="lgroup">'+s+'</div>'+g.map(o=>mk(o.p,o.i)).join('');});
+  document.getElementById('plist').innerHTML=html;
+  document.getElementById('cnt').textContent=shown.length;
+}
+/* ---------- detail ---------- */
+let cur=0,idx=0;
+function openOv(i){
+  cur=i;idx=0;const p=PROJECTS[i];
+  document.getElementById('ovSector').textContent=p.sector;
+  document.getElementById('ovSector').style.color=SECTORS[p.sector]||'#E3C08A';
+  document.getElementById('ovName').textContent=p.name;
+  document.getElementById('ovLoc').textContent=p.loc;
+  const has=p.photos.length>0;
+  document.getElementById('ovStage').style.display=has?'':'none';
+  document.getElementById('ovStrip').style.display=has?'':'none';
+  document.getElementById('ovCap').style.display=has?'':'none';
+  document.getElementById('ovFacts').style.display=has?'none':'flex';
+  if(has){
+    document.getElementById('ovStrip').innerHTML=p.photos.map((ph,k)=>
+      '<button data-k="'+k+'" onclick="show('+k+')" style="background-image:'+cssUrl(ph[0])+'"></button>').join('');
+    show(0);
+  }else{
+    const col=SECTORS[p.sector]||'#E3C08A';
+    const f=(k,v)=>'<div><div class="k">'+k+'</div><div class="v'+(/confirm/i.test(v)?' dim':'')+'">'+v+'</div></div>';
+    /* the establishment name is the credential — make it the hero */
+    document.getElementById('ovFacts').innerHTML=
+      '<div class="wm">'+glyphSvg(p.sector,col,'100%')+'</div>'+
+      '<div class="lbl">'+(p.role==='Fabrication only'?'Fabricated by MSSI':'Delivered by MSSI')+'</div>'+
+      '<h3 class="est">'+(p.building&&!/confirm/i.test(p.building)?p.building:p.name)+'</h3>'+
+      '<div class="loc">'+p.loc+'</div>'+
+      '<div class="rule"></div>'+
+      '<div class="meta">'+f('Client',p.client||'—')+f('Our role',p.role||'—')+
+        f('Sector',p.sector)+f('Scope',p.scope||'—')+'</div>';}
+  document.getElementById('ov').classList.add('open');
+}
+function show(k){const p=PROJECTS[cur];if(!p.photos.length)return;
+  idx=(k+p.photos.length)%p.photos.length;
+  const im=document.getElementById('ovImg');
+  im.src='images/'+encodeURI(p.photos[idx][0]);im.alt=p.photos[idx][1]+' — '+p.name;
+  /* A licensed stock photo (Lagen) carries photoCredit. CC BY REQUIRES the credit,
+     a link to the licence, and a note of changes to be shown wherever the image is
+     — so this renders from the data, it is not decoration. Don't strip it. */
+  document.getElementById('ovCap').innerHTML=
+    esc(p.photos[idx][1])+'&nbsp; · &nbsp;'+(idx+1)+' / '+p.photos.length+creditHtml(p);
+  document.querySelectorAll('#ovStrip button').forEach(b=>b.classList.toggle('on',+b.dataset.k===idx));}
+function step(d){show(idx+d);}
+function closeOv(){document.getElementById('ov').classList.remove('open');}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('ov').classList.contains('open'))return;
+  if(e.key==='Escape')closeOv();
+  if(e.key==='ArrowRight')step(1);
+  if(e.key==='ArrowLeft')step(-1);});
+document.getElementById('ov').addEventListener('click',e=>{if(e.target.id==='ov')closeOv();});
+
+/* Photos come from images/photos.json, keyed by project name — regenerate it with
+   `node scan-photos.js` after dropping Drive folders into images/projects/.
+   Anything already hardcoded above stays as a fallback. */
+function mergePhotos(map){
+  let added=0;
+  PROJECTS.forEach(p=>{
+    const key=Object.keys(map).find(k=>k.toLowerCase()===p.name.toLowerCase());
+    if(!key||!map[key].length)return;
+    /* strip the images/ prefix — every render site already adds it */
+    p.photos=map[key].map((src,n)=>[src.replace(/^images\//,''),p.name+' '+(n+1)]);
+    added+=map[key].length;
+  });
+  return added;
+}
+/* projects.json is the editable project list — add the fabrication-only jobs there,
+   no code change needed. It replaces the inline list when present. */
+function rebuildFrom(rows){
+  const clean=rows.filter(r=>r&&r.name);
+  if(!clean.length)return false;
+  PROJECTS.length=0;
+  clean.forEach(r=>PROJECTS.push(Object.assign({photos:[],scope:'',client:'',building:'',
+    sector:'Sector to confirm',role:'Fabrication & installation',loc:'Location to confirm'},r)));
+  PINS.length=0;
+  PROJECTS.forEach((p,i)=>{if(p.lat!=null&&p.lng!=null)
+    PINS.push({i,x:mxOf(p.lng),y:myOf(p.lat),name:p.name,sector:p.sector});});
+  return true;
+}
+/* cache-bust: these two files change often while the portfolio is being filled in,
+   and a stale copy silently shows the wrong data */
+const NC='?v='+Date.now();
+
+/* The project list above is written in by `node build-prototype.js`, so double-clicking
+   this file works - a file:// page is not allowed to fetch() separate .json files.
+   The fetch below is just a live refresh when it happens to be served over http;
+   if it fails, the inlined copy is already correct, so there is nothing to warn about. */
+fetch('projects.json'+NC).then(r=>r.ok?r.json():null).then(rows=>{
+  if(rows&&rebuildFrom(rows)){drawRail();drawList();
+    console.log('[portfolio] '+PROJECTS.length+' projects from projects.json, '+PINS.length+' pinned');}
+}).catch(()=>{}).then(()=>          /* photos merge AFTER projects, or it merges into a list about to be replaced */
+  fetch('images/photos.json'+NC).then(r=>r.ok?r.json():null).then(m=>{
+    if(!m)return;
+    const n=mergePhotos(m);
+    if(n){drawList();console.log('[portfolio] '+n+' photos from images/photos.json');}
+  }).catch(()=>{}));
+
+resize();drawRail();drawList();requestAnimationFrame(draw);
+addEventListener('resize',resize);
+/* This map is embedded in an iframe that the host page sizes, and a window
+   resize event is not dependable there — it can be missed or throttled while
+   the frame is offscreen or the tab is not compositing. When it is missed both
+   the backing store and BASE, the fit-to-extent scale, stay set for the old
+   box: the map is then drawn small, soft and off centre inside a container it
+   no longer matches. Observing the frame's own box catches every case.
+   resize() is idempotent and keeps pan and zoom, so re-running it is safe. */
+if(window.ResizeObserver) new ResizeObserver(resize).observe(document.documentElement);
+addEventListener('load',resize);
+</script>
+</body>
+</html>
