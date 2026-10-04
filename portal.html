@@ -1518,7 +1518,10 @@ let _mc=null;
 function modcraft(){
   if(_mc) return _mc;
   if(typeof supabase==='undefined'||!supabase.createClient) return null;
-  _mc=supabase.createClient(MODCRAFT_URL,MODCRAFT_KEY);
+  // Its own sign-in slot. The site shares rotaligatos.github.io with ModCraft and Command Center,
+  // which use this same database: with the default slot a staff member's ModCraft sign-in showed
+  // up here as a portal sign-in, and signing out here signed ModCraft out too.
+  _mc=supabase.createClient(MODCRAFT_URL,MODCRAFT_KEY,{auth:{storageKey:'mssi-portal-auth'}});
   return _mc;
 }
 /* Wufoo ids are bare numbers, so this deliberately is not — you can tell at a
