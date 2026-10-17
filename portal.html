@@ -1121,7 +1121,7 @@ footer{background:var(--inv-bg);color:var(--inv-text);padding:4.5rem 0 2rem;tran
         <div class="cl-card" id="panelCard">
           <div class="cl-head"><h4>Cutting list</h4>
             <div style="display:flex;align-items:center;gap:.55rem;flex-wrap:wrap">
-              <span class="hint">One row per panel</span>
+              <span class="hint">One row per panel · like Excel: arrow keys, Shift or drag to select, paste a block</span>
               <button class="cl-fs-btn" id="clFsBtn" type="button" onclick="toggleClFullscreen()" title="Fill the screen — Esc to come back">⛶ Fullscreen</button>
             </div>
           </div>
@@ -1511,6 +1511,98 @@ document.addEventListener('keydown',e=>{
     _clOverlayOff(document.getElementById('panelCard')); _clFsLabel();
   }
 });
+/* ===== CUTTING LIST CELLS, LIKE EXCEL (2026-10-17, same as ModCraft's cutting list) =====
+   Arrow keys move between the typed cells (left/right once the cursor is at the edge of the text);
+   Enter moves down (a new row at the end of a cabinet). Shift+arrows or a mouse drag select a block:
+   Delete clears it, Ctrl+C copies it, a paste fills it — one value into every cell, or a copied
+   block from its top-left corner. Pasting a block from Excel into one cell fills the rows below and
+   the columns to the right, adding rows to that cabinet as needed. Only the typed cells take part
+   (Part, Material, Thk, Qty, Length, Width, Edge material, Remarks); dropdowns and services do not. */
+(function(){
+  const allRows=()=>[...document.querySelectorAll('#grpWrap tbody tr')];
+  const cellsOf=tr=>[...tr.querySelectorAll(':scope > td > input')];
+  const inGrid=t=>t&&t.tagName==='INPUT'&&t.parentElement&&t.parentElement.parentElement&&t.parentElement.parentElement.closest&&t.parentElement.parentElement.closest('#grpWrap tbody')&&t.parentElement.tagName==='TD';
+  const pos=inp=>{const tr=inp.closest('tr'),r=allRows().indexOf(tr),c=cellsOf(tr).indexOf(inp);return(r<0||c<0)?null:{r,c};};
+  const cellAt=(r,c)=>{const tr=allRows()[r];return tr?cellsOf(tr)[c]:null;};
+  let SEL=null,drag=false,keep=false;
+  const multi=()=>!!SEL&&(SEL.ar!==SEL.fr||SEL.ac!==SEL.fc);
+  const box=()=>({r0:Math.min(SEL.ar,SEL.fr),r1:Math.max(SEL.ar,SEL.fr),c0:Math.min(SEL.ac,SEL.fc),c1:Math.max(SEL.ac,SEL.fc)});
+  function paint(){
+    document.querySelectorAll('#grpWrap .cl-sel').forEach(x=>x.classList.remove('cl-sel'));
+    if(!multi())return;
+    if(!document.getElementById('cl-sel-style')){const st=document.createElement('style');st.id='cl-sel-style';
+      st.textContent='#grpWrap input.cl-sel{background:rgba(122,140,110,.18)!important;outline:1.5px solid currentColor;outline-offset:-1px}';document.head.appendChild(st);}
+    const b=box();for(let r=b.r0;r<=b.r1;r++)for(let c=b.c0;c<=b.c1;c++){const e=cellAt(r,c);if(e)e.classList.add('cl-sel');}
+  }
+  // Same as typing: the row's own handlers run (catalogue lookup, thickness, totals).
+  function put(inp,v){
+    if(!inp||inp.disabled)return;
+    let val=String(v==null?'':v).trim();
+    if(inp.type==='number'){const m=val.replace(/,/g,'').match(/-?\d+(\.\d+)?/);val=m?m[0]:'';}
+    inp.value=val;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function moveTo(r,c,extend){
+    const R=allRows();if(!R.length)return;
+    r=Math.max(0,Math.min(R.length-1,r));const n=cellsOf(R[r]).length;c=Math.max(0,Math.min(n-1,c));
+    if(extend&&SEL){SEL.fr=r;SEL.fc=c;}else SEL={ar:r,ac:c,fr:r,fc:c};
+    const e=cellAt(r,c);if(e){keep=true;e.focus();try{e.select();}catch(x){}}
+    paint();
+  }
+  document.addEventListener('focusin',e=>{
+    if(!inGrid(e.target))return;if(keep){keep=false;return;}if(drag)return;
+    const p=pos(e.target);if(p){SEL={ar:p.r,ac:p.c,fr:p.r,fc:p.c};paint();}
+  });
+  document.addEventListener('mousedown',e=>{
+    if(!inGrid(e.target))return;const p=pos(e.target);if(!p)return;
+    if(e.shiftKey&&SEL){e.preventDefault();SEL.fr=p.r;SEL.fc=p.c;paint();return;}
+    SEL={ar:p.r,ac:p.c,fr:p.r,fc:p.c};drag=true;paint();
+  },true);
+  document.addEventListener('mouseup',()=>{drag=false;});
+  document.addEventListener('mouseover',e=>{
+    if(!drag||!(e.buttons&1)||!SEL||!inGrid(e.target))return;const p=pos(e.target);if(!p||(SEL.fr===p.r&&SEL.fc===p.c))return;
+    SEL.fr=p.r;SEL.fc=p.c;try{window.getSelection().removeAllRanges();}catch(x){}paint();
+  });
+  document.addEventListener('keydown',e=>{
+    const t=e.target;if(!inGrid(t))return;const p=pos(t);if(!p)return;const k=e.key;
+    if(k==='ArrowDown'||k==='ArrowUp'){e.preventDefault();moveTo((e.shiftKey&&SEL?SEL.fr:p.r)+(k==='ArrowDown'?1:-1),e.shiftKey&&SEL?SEL.fc:p.c,e.shiftKey);return;}
+    if(k==='ArrowLeft'||k==='ArrowRight'){
+      let edge=true;try{if(t.selectionStart!=null)edge=k==='ArrowLeft'?(t.selectionStart===0&&t.selectionEnd===0):(t.selectionEnd===t.value.length);}catch(x){}
+      if(e.shiftKey&&multi())edge=true;
+      if(edge){e.preventDefault();moveTo(e.shiftKey&&SEL?SEL.fr:p.r,(e.shiftKey&&SEL?SEL.fc:p.c)+(k==='ArrowRight'?1:-1),e.shiftKey);}
+      return;
+    }
+    if(k==='Enter'){
+      e.preventDefault();const R=allRows(),tr=R[p.r],tb=tr.parentElement,last=tb.lastElementChild===tr;
+      if(last&&typeof addRow==='function'){addRow(tb.id,1);}
+      const R2=allRows(),i2=R2.indexOf(tr)+1;moveTo(i2,p.c,false);return;
+    }
+    if((k==='Delete'||k==='Backspace')&&multi()){e.preventDefault();const b=box();
+      for(let r=b.r0;r<=b.r1;r++)for(let c=b.c0;c<=b.c1;c++)put(cellAt(r,c),'');paint();return;}
+    if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='C')&&multi()){e.preventDefault();const b=box(),lines=[];
+      for(let r=b.r0;r<=b.r1;r++){const row=[];for(let c=b.c0;c<=b.c1;c++){const x=cellAt(r,c);row.push(x?x.value:'');}lines.push(row.join('\t'));}
+      try{navigator.clipboard.writeText(lines.join('\n'));if(typeof toast==='function')toast('Copied '+((b.r1-b.r0+1)*(b.c1-b.c0+1))+' cells');}catch(x){}return;}
+    if(k==='Escape'&&multi()){SEL={ar:p.r,ac:p.c,fr:p.r,fc:p.c};paint();}
+  });
+  document.addEventListener('paste',e=>{
+    const t=e.target;if(!inGrid(t))return;const p=pos(t);if(!p)return;
+    const dt=e.clipboardData||window.clipboardData;const text=dt&&dt.getData('text');if(!text)return;
+    const clean=text.replace(/\r/g,'').replace(/\n$/,''),block=clean.indexOf('\t')>=0||clean.indexOf('\n')>=0;
+    if(multi()&&!block){e.preventDefault();const b=box();
+      for(let r=b.r0;r<=b.r1;r++)for(let c=b.c0;c<=b.c1;c++)put(cellAt(r,c),clean);paint();return;}
+    if(!block)return;                                       // one value into one cell: the browser does it
+    e.preventDefault();
+    // A block lands from the selection's top-left (or this cell), inside this cabinet's table.
+    const r0=multi()?box().r0:p.r,c0=multi()?box().c0:p.c,startTr=allRows()[r0],tb=startTr.parentElement;
+    const lines=clean.split('\n');
+    let trs=[...tb.children],start=trs.indexOf(startTr);
+    while(trs.length<start+lines.length&&typeof addRow==='function'){addRow(tb.id,1);trs=[...tb.children];}
+    lines.forEach((line,dr)=>{const tr=trs[start+dr];if(!tr)return;const cs=cellsOf(tr);
+      line.split('\t').forEach((v,dc)=>{if(c0+dc<cs.length)put(cs[c0+dc],v);});});
+    const R=allRows(),rr=R.indexOf(trs[start]);
+    SEL={ar:rr,ac:c0,fr:rr+lines.length-1,fc:Math.min(c0+Math.max(...lines.map(l=>l.split('\t').length))-1,cellsOf(trs[start]).length-1)};paint();
+  });
+})();
+
 /* ===== SENDING TO MODCRAFT =====================================================
    Route B: the browser writes straight to Supabase with the publishable key.
    That key is public by design — the policies allow INSERT only, so a visitor can
