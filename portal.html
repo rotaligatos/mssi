@@ -1149,7 +1149,7 @@ footer{background:var(--inv-bg);color:var(--inv-text);padding:4.5rem 0 2rem;tran
             <b>Edge band</b> &mdash; which edges get banding, blank if none: <code>1L</code> one long &middot; <code>2L</code> both long &middot; <code>1S</code> one short &middot; <code>1L 1S</code> one long + one short &middot; <code>4S</code> all round. Long/short follows the piece, whichever way you set it up.<br>
             <b>Edge material</b> &mdash; the tape or strip; same catalogue as the boards.<br>
             <b>Grain</b> &mdash; which way the woodgrain runs on that piece. Set the job default above; click a row’s button to run that one the opposite way. This fixes how the part may be turned when we nest the boards, so it changes both the look and the yield.<br>
-            <b>Services</b> &mdash; grooving, boring, routing, HPL lamination. Per-metre services ask which edge they run along; curved work uses <b>Manual Edgebanding</b> with a mm run.
+            <b>Services</b> &mdash; grooving, boring, routing, HPL lamination. Per-metre services ask which edge they run along; curved work uses <b>Manual Edgebanding</b> with a mm run. A <b>special cut</b> (notch, curve, inside cut) takes the mm the saw cannot do in one straight pass; if that panel is edge banded, it is banded by hand &mdash; give its banded length along the real outline as Manual Edgebanding.
           </div>
         </div>
 
@@ -2018,7 +2018,9 @@ const SERVICE_UOM={
   'Grooving (3mm width melamine)':'lm','Grooving (3mm width compact lam)':'lm',
   'Router Grooving':'lm','Sliding Door Grooving':'lm','Handgrab Groove':'lm',
   'Flush Handle Groove':'qty','Routered Handgrab / Finger handgrab':'qty',
-  'Routeriing (Special Cut)':'lm',
+  // A special cut is the part the panel saw cannot do (notches, curves, inside cuts): its run is
+  // measured in mm, not "along L / W" (aligned with ModCraft, 2026-10-17).
+  'Routeriing (Special Cut)':'lm-manual',
   'Manual Edgebanding EVA':'lm-manual','Manual Edgebanding EVA Transparent':'lm-manual',
   'HPL Lamination':'sqm'};
 
@@ -2155,7 +2157,8 @@ function onMat(inp){
   recalc();
 }
 function onEbt(sel){const e=sel.closest('tr').querySelector('.emat');
-  e.disabled=(sel.value==='');if(e.disabled){e.value='';e.classList.remove('custom');}}
+  e.disabled=(sel.value==='');if(e.disabled){e.value='';e.classList.remove('custom');}
+  ensureManualEb(sel.closest('tr'));}
 function mkChip(name,dir){
   const chip=document.createElement('span');
   chip.className='svc-chip'+(SERVICES.indexOf(name)<0?' custom':'');
@@ -2182,7 +2185,22 @@ function mkChip(name,dir){
 }
 function commitSvc(inp){const v=inp.value.trim();if(!v)return;
   inp.closest('.svc-wrap').querySelector('.svc-chips').appendChild(mkChip(v));
-  inp.value='';inp.classList.remove('custom');}
+  inp.value='';inp.classList.remove('custom');
+  ensureManualEb(inp.closest('tr'));}
+/* A special-cut panel that is edge banded is banded BY HAND, the whole panel, and its banding
+   follows the real outline (cut-out edges included) — same rule as ModCraft (Rommel, 2026-10-17).
+   So a Manual Edgebanding chip is added for the client to give that length in mm. */
+function ensureManualEb(tr){
+  if(!tr)return;
+  const chips=[].slice.call(tr.querySelectorAll('.svc-chip')).map(c=>c.firstChild.textContent.trim());
+  const sc=chips.some(n=>/special\s*cut/i.test(n)), meb=chips.some(n=>/manual\s*edge/i.test(n));
+  const ebt=tr.querySelector('.ebt');
+  if(sc&&ebt&&ebt.value!==''&&!meb){
+    const ch=mkChip('Manual Edgebanding EVA');ch.querySelector('input').title='Banded length of ONE panel in mm, along its real outline (cut-out edges included)';
+    tr.querySelector('.svc-chips').appendChild(ch);
+    if(typeof toast==='function')toast('A special cut is edge banded by hand — enter its banded length in mm along the real outline');
+  }
+}
 function svcLive(inp){inp.classList.toggle('custom',inp.value.trim()!==''&&SERVICES.indexOf(inp.value.trim())<0);}
 function svcKey(e,inp){if(e.key==='Enter'){e.preventDefault();commitSvc(inp);}}
 function svcAdd(btn){commitSvc(btn.previousElementSibling);}
@@ -2339,6 +2357,7 @@ function collectPanels(){
         mat:tr.querySelector('.fin').value,matCustom:tr.querySelector('.fin').classList.contains('custom'),
         L:L,W:W,th:tr.querySelector('.thk').value,qty:q,
         ebt:tr.querySelector('.ebt').value,ebtRaw:tr.dataset.ebtRaw||'',
+        specialCut:svcs.some(x=>/special\s*cut/i.test(x))?'SPECIAL CUT':'',
         emat:tr.querySelector('.emat').value,
         grain:rowGrain(tr),grainFlipped:rowGrain(tr)!==GRAIN,
         svcs:svcs,area:L*W/1e6*q});
