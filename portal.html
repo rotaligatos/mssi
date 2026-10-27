@@ -1101,7 +1101,7 @@ footer{background:var(--inv-bg);color:var(--inv-text);padding:4.5rem 0 2rem;tran
           <table class="cl-tbl"><thead><tr>
             <th style="width:2rem">#</th><th style="min-width:185px">Substrate board</th>
             <th style="min-width:185px">HPL finish</th><th style="width:60px">Faces</th>
-            <th class="c-dim">Length mm</th><th class="c-dim">Width mm</th><th class="c-qty">Qty</th>
+            <th class="c-dim">Width mm</th><th class="c-dim">Length mm</th><th class="c-qty">Qty</th>
             <th style="width:80px">Cut to size</th><th style="min-width:175px">Service (auto)</th>
             <th class="cl-area">Lam. m&sup2;</th><th class="c-x"></th>
           </tr></thead><tbody id="tbhpl"></tbody></table>
@@ -1517,7 +1517,7 @@ document.addEventListener('keydown',e=>{
    Delete clears it, Ctrl+C copies it, a paste fills it — one value into every cell, or a copied
    block from its top-left corner. Pasting a block from Excel into one cell fills the rows below and
    the columns to the right, adding rows to that cabinet as needed. Only the typed cells take part
-   (Part, Material, Thk, Qty, Length, Width, Edge material, Remarks); dropdowns and services do not. */
+   (Part, Material, Thk, Qty, Width, Length, Edge material, Remarks); dropdowns and services do not. */
 (function(){
   const allRows=()=>[...document.querySelectorAll('#grpWrap tbody tr')];
   const cellsOf=tr=>[...tr.querySelectorAll(':scope > td > input')];
@@ -2076,8 +2076,9 @@ function rowHtml(){
    '<td><input class="fin" list="matlist" placeholder="search or type SKU" oninput="onMat(this)"></td>'+
    '<td class="num"><input class="thk" type="number" min="0" placeholder="—"></td>'+
    '<td class="num"><input class="qty" type="number" min="0" placeholder="0" oninput="recalc()"></td>'+
-   '<td class="num"><input class="L" type="number" min="0" placeholder="0" oninput="recalc()"></td>'+
+   // Width before Length (Rommel, 2026-10-27): operators read sizes as W × L. Read by class, so order is display only.
    '<td class="num"><input class="W" type="number" min="0" placeholder="0" oninput="recalc()"></td>'+
+   '<td class="num"><input class="L" type="number" min="0" placeholder="0" oninput="recalc()"></td>'+
    '<td><select class="ebt" onchange="onEbt(this)">'+ebtOpts()+'</select></td>'+
    '<td><input class="emat" list="ebandlist" placeholder="search or type" disabled oninput="markMat(this)"></td>'+
    '<td class="c-grain"><button type="button" class="grain" onclick="flipGrain(this)" '+
@@ -2095,7 +2096,7 @@ function rowHtml(){
 }
 function panelHead(){
   return '<thead><tr><th style="width:2rem">#</th><th class="c-part">Part</th><th class="c-mat">Material · SKU</th>'+
-   '<th class="c-thk">Thk</th><th class="c-qty">Qty</th><th class="c-dim">Length mm</th><th class="c-dim">Width mm</th>'+
+   '<th class="c-thk">Thk</th><th class="c-qty">Qty</th><th class="c-dim">Width mm</th><th class="c-dim">Length mm</th>'+
    '<th class="c-ebt">Edge band</th><th class="c-emat">Edge material</th>'+
    '<th class="c-grain" title="Which way the grain runs on this piece">Grain</th>'+
    '<th class="c-svc">Services</th>'+
@@ -2270,8 +2271,8 @@ function hplRowHtml(){
    '<td><input class="hsub" list="sublist" placeholder="search or type" oninput="hplRow(this)"></td>'+
    '<td><input class="hfin" list="hpllist" placeholder="search or type" oninput="hplRow(this)"></td>'+
    '<td><select class="hfaces" onchange="hplRow(this)"><option>1F</option><option>2F</option></select></td>'+
-   '<td class="num"><input class="L" type="number" min="0" placeholder="0" oninput="hplRow(this)"></td>'+
    '<td class="num"><input class="W" type="number" min="0" placeholder="0" oninput="hplRow(this)"></td>'+
+   '<td class="num"><input class="L" type="number" min="0" placeholder="0" oninput="hplRow(this)"></td>'+
    '<td class="num"><input class="qty" type="number" min="0" placeholder="0" oninput="hplRow(this)"></td>'+
    '<td class="chk-cell"><input type="checkbox" class="hcut" onchange="hplRow(this)"></td>'+
    '<td class="svc-cell">—</td><td class="cl-area">0.000</td>'+
@@ -2430,8 +2431,8 @@ function loadSample(){
 /* ---------- Excel ---------- */
 // Same order as Modcraft's screen and template (team's request, 2026-09-30). The upload finds
 // columns by HEADER, so files made from the older order still import.
-const XL_PANEL_HDR=['Group (cabinet/area)','Part','Material SKU','Thickness (mm)','Qty','Length (mm)','Width (mm)','Edge Band','Edge Material','Grain (L/W)','Services','Remarks'];
-const XL_HPL_HDR=['Substrate SKU','HPL Finish SKU','Faces (1F/2F)','Length (mm)','Width (mm)','Qty','Cut to size (Y/N)'];
+const XL_PANEL_HDR=['Group (cabinet/area)','Part','Material SKU','Thickness (mm)','Qty','Width (mm)','Length (mm)','Edge Band','Edge Material','Grain (L/W)','Services','Remarks'];
+const XL_HPL_HDR=['Substrate SKU','HPL Finish SKU','Faces (1F/2F)','Width (mm)','Length (mm)','Qty','Cut to size (Y/N)'];
 const XL_HW_HDR=['Item','Qty','Unit','Notes'];
 /* Every client keeps their own edge-banding legend — "4 sides", "ALL AROUND",
    "TBLR", "2 long 1 short". Until now anything that was not one of our nine
@@ -2522,8 +2523,8 @@ function buildTemplateFallback(){
     ws['!cols']=widths||rows[0].map(()=>({wch:18}));XLSX.utils.book_append_sheet(wb,ws,name);};
   // Example rows now use real catalogue names, because the name IS the SKU.
   add([XL_PANEL_HDR,
-    ['Kitchen — Base Cabinet 1','Side panel','Real White PB 4x8 2F (18mm, Matte)',18,2,720,560,'1L 1S','Bamboo .5mmx22mm Matte PVC Premium Edgeband','L','Boring 35mm (Hinges) x 4 holes','hinge side is the left edge'],
-    ['Kitchen — Base Cabinet 1','Door','Walnut 259 PB 4x8 2F (18mm, Matte)',18,2,716,296,'4S','Bamboo .5mmx22mm Matte PVC Premium Edgeband','L','']],'Cutting List');
+    ['Kitchen — Base Cabinet 1','Side panel','Real White PB 4x8 2F (18mm, Matte)',18,2,560,720,'1L 1S','Bamboo .5mmx22mm Matte PVC Premium Edgeband','L','Boring 35mm (Hinges) x 4 holes','hinge side is the left edge'],
+    ['Kitchen — Base Cabinet 1','Door','Walnut 259 PB 4x8 2F (18mm, Matte)',18,2,296,716,'4S','Bamboo .5mmx22mm Matte PVC Premium Edgeband','L','']],'Cutting List');
   add([XL_HPL_HDR,['Raw Boards 4x8 18mm MDF','Pure white 4x8 0.7mm HPL','2F',1220,2440,4,'N']],'HPL Lamination');
   add([XL_HW_HDR,['Overlay hinge',4,'pcs','2 per door']],'Hardware');
   // The catalogue is 124,132 names — it cannot be shipped in the workbook, and
@@ -2820,7 +2821,8 @@ function uploadTemplate(e){
         addHpl(1);const tr=document.querySelector('#tbhpl tr:last-child');
         tr.querySelector('.hsub').value=bySku(r[0]);tr.querySelector('.hfin').value=bySku(r[1]);
         if((r[2]||'').toString().toUpperCase()==='2F')tr.querySelector('.hfaces').value='2F';
-        tr.querySelector('.L').value=+r[3]||'';tr.querySelector('.W').value=+r[4]||'';
+        const hh=hpl[0]||[],wl=/width/i.test(hh[3]||'')&&/length/i.test(hh[4]||'');   // new template is Width first
+        tr.querySelector('.L').value=+(wl?r[4]:r[3])||'';tr.querySelector('.W').value=+(wl?r[3]:r[4])||'';
         tr.querySelector('.qty').value=+r[5]||'';
         tr.querySelector('.hcut').checked=/^y/i.test((r[6]||'').toString());
         hplRow(tr.querySelector('.hsub'));});
@@ -2892,9 +2894,9 @@ function goPreview(){
   let html='';
   if(hpl.length){
     html+='<div class="pv-sec"><h5>HPL Lamination</h5><div class="pv-scroll"><table class="pv"><thead><tr>'+
-      '<th>#</th><th>Substrate</th><th>HPL finish</th><th>Faces</th><th>L</th><th>W</th><th>Qty</th><th>Service</th><th>Lam. m²</th></tr></thead><tbody>'+
+      '<th>#</th><th>Substrate</th><th>HPL finish</th><th>Faces</th><th>W</th><th>L</th><th>Qty</th><th>Service</th><th>Lam. m²</th></tr></thead><tbody>'+
       hpl.map((r,i)=>'<tr><td class="mono">'+(i+1)+'</td><td>'+dash(r.sub)+'</td><td>'+dash(r.fin)+'</td><td class="mono">'+r.faces+
-        '</td><td class="mono">'+r.L+'</td><td class="mono">'+r.W+'</td><td class="mono">'+r.qty+'</td><td>'+dash(r.svc)+
+        '</td><td class="mono">'+r.W+'</td><td class="mono">'+r.L+'</td><td class="mono">'+r.qty+'</td><td>'+dash(r.svc)+
         '</td><td class="mono">'+r.area.toFixed(3)+'</td></tr>').join('')+'</tbody></table></div></div>';
   }
   if(panels.length){
@@ -2903,10 +2905,10 @@ function goPreview(){
     groups.forEach(gn=>{
       const rows=panels.filter(p=>p.group===gn);
       html+='<div class="grp-name">'+esc(gn)+'</div><div class="pv-scroll"><table class="pv"><thead><tr>'+
-        '<th>#</th><th>Part</th><th>Material</th><th>Thk</th><th>Qty</th><th>L</th><th>W</th><th>Edge</th><th>Edge material</th><th>Grain</th><th>Services</th><th>Area m²</th><th>Remarks</th></tr></thead><tbody>'+
+        '<th>#</th><th>Part</th><th>Material</th><th>Thk</th><th>Qty</th><th>W</th><th>L</th><th>Edge</th><th>Edge material</th><th>Grain</th><th>Services</th><th>Area m²</th><th>Remarks</th></tr></thead><tbody>'+
         rows.map((r,i)=>'<tr><td class="mono">'+(i+1)+'</td><td>'+dash(r.part)+'</td><td>'+dash(r.mat)+
-          '</td><td class="mono">'+dash(r.th)+'</td><td class="mono">'+r.qty+'</td><td class="mono">'+r.L+
-          '</td><td class="mono">'+r.W+'</td><td class="mono">'+dash(r.ebt)+'</td><td>'+dash(r.emat)+
+          '</td><td class="mono">'+dash(r.th)+'</td><td class="mono">'+r.qty+'</td><td class="mono">'+r.W+
+          '</td><td class="mono">'+r.L+'</td><td class="mono">'+dash(r.ebt)+'</td><td>'+dash(r.emat)+
           '</td><td class="mono">'+r.grain+(r.grainFlipped?' \u21ba':'')+
           '</td><td>'+dash(r.svcs.join(', '))+'</td><td class="mono">'+r.area.toFixed(3)+'</td><td>'+dash(r.remarks)+'</td></tr>').join('')+
         '</tbody></table></div>';
